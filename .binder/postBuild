@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -e
+mkdir -p 20250928/{lists,out,data}
+echo "ROOT version:" $(root-config --version)
