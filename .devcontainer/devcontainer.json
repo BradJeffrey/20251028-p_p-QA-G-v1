@@ -1,0 +1,13 @@
+{
+  "name": "qa-root",
+  "image": "rootproject/root:6.30.06-ubuntu22",
+  "customizations": {
+    "vscode": {
+      "settings": { "terminal.integrated.defaultProfile.linux": "bash" }
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+  "postCreateCommand": "bash -lc 'mkdir -p 20250928/{lists,out,data} && root-config --version'"
+}
