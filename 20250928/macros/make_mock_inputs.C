@@ -13,9 +13,13 @@ void make_mock_inputs(const char* outpath="20250928/data/smoke.root") {
   for (int i=0;i<40000;++i) hbco.Fill((int)gRandom->Gaus(32,4));
   hbco.Write();
   // INTT cluster size
-  TH1F hcs("h_MvtxClusterQA_clusterSize","",10,0,10);
-  for(int i=0;i<20000;++i) hcs.Fill(gRandom->Gaus(3,0.7));
-  hcs.Write();
+  TH1F hInttClusterSize("h_InttClusterQA_clusterSize","",10,0,10);
+  for(int i=0;i<20000;++i) hInttClusterSize.Fill(gRandom->Gaus(3,0.7));
+  hInttClusterSize.Write();
+  // MVTX cluster size
+  TH1F hmvtxcs("h_MvtxClusterQA_clusterSize","",10,0,10);
+  for(int i=0;i<20000;++i) hmvtxcs.Fill(gRandom->Gaus(3,0.7));
+  hmvtxcs.Write();
   // TPC phi size side0
   TH1F htpcphi0("h_TpcClusterQA_phisize_side0_0","",50,0,5);
   for(int i=0;i<10000;++i) htpcphi0.Fill(gRandom->Gaus(2.0,0.4));
