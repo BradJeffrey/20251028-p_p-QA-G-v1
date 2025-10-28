@@ -136,10 +136,7 @@
 // [136]     need(1); TH1* h=getH(m.h[0]); if(!h||entries(h)<=0) return NAN; wt=entries(h); return h_median(h);
 // [137]   } else if (m.method.rfind("quantilep",0)==0) {
 // [138]     need(1); TH1* h=getH(m.h[0]); if(!h||entries(h)<=0) return NAN; wt=entries(h); double p=atof(m.method.substr(9).c_str())/100.0; return h_quantile(h,p);
-// [139]  } else if (m.method.size() > 1 && m.method[0] == 'p' && isdigit(static_cast<unsigned char>(m.method[1]))) {
-    need(1); TH1* h=getH(m.h[0]); if(!h||entries(h)<=0) return NAN; wt=entries(h);
-    double p=atof(m.method.substr(1).c_str())/100.0; return h_quantile(h,p);
-  } else if (m.method=="landau_mpv") {
+// [139]   } else if (m.method=="landau_mpv") {
 // [140]     need(1); TH1* h=getH(m.h[0]); if(!h||entries(h)<=0) return NAN; wt=entries(h); return landau_mpv(h,m.xlow,m.xhigh);
 // [141]   } else if (m.method=="asym") {
 // [142]     need(2); TH1* hN=getH(m.h[0]); TH1* hS=getH(m.h[1]); if(!hN||!hS) return NAN;
