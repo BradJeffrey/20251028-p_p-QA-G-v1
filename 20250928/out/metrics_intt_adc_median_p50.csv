@@ -1,0 +1,77 @@
+run,segment,file,value,error,weight
+66522,-1,data/RootTasks/Taks1V1001/Task1V1004/Project_20250928Start end 20251015/20250928/run66522.root,3.37071,0,1.34774e+08
+66522,-1,data/RootTasks/Taks1V1001/Task1V1004/Project_20250928Start/20250928/run66522.root,3.37071,0,1.34774e+08
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/V5_works/clusters_seeds_66641-0.root_qa.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/V5_works/clusters_seeds_66684-0.root_qa.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/V5_works/clusters_seeds_66685-0.root_qa.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/data /clusters_seeds_66641-0.root_qa.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/data /clusters_seeds_66684-0.root_qa.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/data /clusters_seeds_66685-0.root_qa.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v3/clusters_seeds_66641-0.root_qa.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v3/clusters_seeds_66684-0.root_qa.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v3/clusters_seeds_66685-0.root_qa.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v4/clusters_seeds_66641-0.root_qa.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v4/clusters_seeds_66684-0.root_qa.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v4/clusters_seeds_66685-0.root_qa.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v6_works/clusters_seeds_66641-0.root_qa.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v6_works/clusters_seeds_66684-0.root_qa.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v6_works/clusters_seeds_66685-0.root_qa.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v7_worskish/clusters_seeds_66641-0.root_qa.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v7_worskish/clusters_seeds_66684-0.root_qa.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v7_worskish/clusters_seeds_66685-0.root_qa.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/Task13/GaussianCauchyPeak.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/Task18/3Dhistogram.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/Task19/histogram.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/Task20/histogram.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/Task23/particles.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/Task24/Task23_old_4/particles.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/Task24/particles.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/Task25/particles.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/Task26/particles.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/Task8/MakeProfile.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/coresoftware/calibrations/tpc/fillDigitalCurrentMaps/Files/TPCGainMaps.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/histogram.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/particles.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running/DSTs/DST_CALOR-00053744-0000.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running/coresoftware/calibrations/tpc/fillDigitalCurrentMaps/Files/TPCGainMaps.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running/hists_00053744-0000.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running/subtracted_histograms.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V11/DST_CALOR-00053744-0000.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V11/hists_00053744-0000.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V7/DST_CALOR-00053744-0000.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V7/epdMultiplicitySEPD.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V7/robustCalHists_SEPD.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V8/DST_CALOR-00053744-0000.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V8/epdMultiplicity.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V8/robustCalHists.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9 copy/epdMultiplicity.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9 copy/robustCalHists.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/DST_CALOR-00053744-0000.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/Good old runs results (v13)/fitted_histograms_merged.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/Good old runs results (v13)/fitted_histograms_merged_0.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/LastRunB4_06262025GroupMeeting/fitted_histograms_merged.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/epdMultiplicity.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/fit_results_DST_CALOR-00053744-0000_summary.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/fit_results_v6_DST_CALOR-00053744-0000_summary.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/fitted_histograms.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/fitted_histograms20250616414.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/fitted_histograms_BestRun.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/processed_histograms.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/robustCalHists.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/sPHENIX_pp_running/hists_00053744-0000.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/subtracted_histograms.root,nan,0,0
+0,-1,data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/v23/fitted_histograms_merged.root,nan,0,0
+0,-1,data/RootTasks/fitted_histograms_merged.root,nan,0,0
+66522,-1,data/run66522.root,3.37071,0,1.34774e+08
+66684,-1,data/run66684.root,3.35322,0,4.05401e+09
+66685,-1,data/run66685.root,3.3678,0,6.07126e+08
+68520,-1,data/run68520.root,3.13729,0,1.46195e+10
+68522,-1,data/run68522.root,3.00838,0,1.83442e+10
+68523,-1,data/run68523.root,3.08047,0,7.05937e+09
+68531,-1,data/run68531.root,3.05904,0,1.75965e+10
+68548,-1,data/run68548.root,3.12792,0,1.47173e+09
+68550,-1,data/run68550.root,3.20841,0,5.8117e+09
+68554,-1,data/run68554.root,2.99545,0,1.87613e+10
+68584,-1,data/run68584.root,3.0113,0,1.74397e+10
+68589,-1,data/run68589.root,3.21208,0,1.60822e+10
+68604,-1,data/run68604.root,2.98517,0,1.17067e+10
