@@ -1,77 +1,13 @@
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/Project_20250928Start end 20251015/20250928/run66522.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/Project_20250928Start/20250928/run66522.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/V5_works/clusters_seeds_66641-0.root_qa.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/V5_works/clusters_seeds_66684-0.root_qa.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/V5_works/clusters_seeds_66685-0.root_qa.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/data /clusters_seeds_66641-0.root_qa.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/data /clusters_seeds_66684-0.root_qa.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/data /clusters_seeds_66685-0.root_qa.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v3/clusters_seeds_66641-0.root_qa.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v3/clusters_seeds_66684-0.root_qa.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v3/clusters_seeds_66685-0.root_qa.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v4/clusters_seeds_66641-0.root_qa.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v4/clusters_seeds_66684-0.root_qa.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v4/clusters_seeds_66685-0.root_qa.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v6_works/clusters_seeds_66641-0.root_qa.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v6_works/clusters_seeds_66684-0.root_qa.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v6_works/clusters_seeds_66685-0.root_qa.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v7_worskish/clusters_seeds_66641-0.root_qa.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v7_worskish/clusters_seeds_66684-0.root_qa.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v7_worskish/clusters_seeds_66685-0.root_qa.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/Task13/GaussianCauchyPeak.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/Task18/3Dhistogram.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/Task19/histogram.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/Task20/histogram.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/Task23/particles.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/Task24/Task23_old_4/particles.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/Task24/particles.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/Task25/particles.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/Task26/particles.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/Task8/MakeProfile.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/coresoftware/calibrations/tpc/fillDigitalCurrentMaps/Files/TPCGainMaps.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/histogram.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/particles.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running/DSTs/DST_CALOR-00053744-0000.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running/coresoftware/calibrations/tpc/fillDigitalCurrentMaps/Files/TPCGainMaps.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running/hists_00053744-0000.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running/subtracted_histograms.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V11/DST_CALOR-00053744-0000.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V11/hists_00053744-0000.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V7/DST_CALOR-00053744-0000.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V7/epdMultiplicitySEPD.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V7/robustCalHists_SEPD.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V8/DST_CALOR-00053744-0000.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V8/epdMultiplicity.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V8/robustCalHists.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9 copy/epdMultiplicity.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9 copy/robustCalHists.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/DST_CALOR-00053744-0000.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/Good old runs results (v13)/fitted_histograms_merged.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/Good old runs results (v13)/fitted_histograms_merged_0.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/LastRunB4_06262025GroupMeeting/fitted_histograms_merged.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/epdMultiplicity.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/fit_results_DST_CALOR-00053744-0000_summary.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/fit_results_v6_DST_CALOR-00053744-0000_summary.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/fitted_histograms.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/fitted_histograms20250616414.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/fitted_histograms_BestRun.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/processed_histograms.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/robustCalHists.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/sPHENIX_pp_running/hists_00053744-0000.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/subtracted_histograms.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/v23/fitted_histograms_merged.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/RootTasks/fitted_histograms_merged.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/mock.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/run66522.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/run66684.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/run66685.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/run68520.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/run68522.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/run68523.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/run68531.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/run68548.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/run68550.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/run68554.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/run68584.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/run68589.root
-/Users/brad/20251028-p_p-QA-G-v1/20250928/data/run68604.root
+data/run66522.root
+data/run66684.root
+data/run66685.root
+data/run68520.root
+data/run68522.root
+data/run68523.root
+data/run68531.root
+data/run68548.root
+data/run68550.root
+data/run68554.root
+data/run68584.root
+data/run68589.root
+data/run68604.root
