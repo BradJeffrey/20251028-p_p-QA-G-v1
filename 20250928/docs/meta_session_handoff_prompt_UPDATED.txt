@@ -1,0 +1,163 @@
+# 🧠 Meta Session Handoff Prompt — For End-of-Session Updates (REAL DATA + Docs)
+
+Use this prompt as the **final message** in any ChatGPT working session for the sPHENIX QA Pipeline (ROOT, real data edition).  
+Its purpose is to generate updated artifacts that reflect everything achieved or changed in the current conversation, **including the project documentation**.
+
+---
+
+## 🧩 Context
+
+You (the assistant) are at the **end of a working session** for the sPHENIX QA Pipeline (real‑data edition).  
+Your job now is to create **updated versions** of the handoff & prelaunch files **and** refresh the **documentation set** so a new conversation can seamlessly continue development in Agent Mode.
+
+You will be given:
+1. The most recent versions of the following files (uploaded by the user):
+   - `handoff_for_new_agent_REALDATA.txt`
+   - `user_prelaunch_instructions_REALDATA.txt`
+   - `project_documentation.md` *(or `.txt` if that’s the current format)*
+   - `quickstart_user_guide.md` *(optional but recommended)*
+2. The session summary text file produced by this session (e.g., `session_update_summary.txt` or `session_update_summary_<date>.txt`).
+3. Any new information, code, or decisions made during this chat (e.g., new macros, Makefile targets, metrics definitions, CI steps, and **CHANGELOG** entries).
+
+> **Note:** If any of the expected inputs are missing, proceed with what you have and clearly mark “(created new in this session)” in the corresponding outputs.
+
+---
+
+## 🧾 Your Task
+
+Using all inputs above, you must produce **four updated files** (plus a changelog refresh if requested):
+
+### 1️⃣ `handoff_for_new_agent_UPDATED.txt`
+A rewritten version of the current handoff file that integrates everything learned or changed during this session. It must include:
+- A clear, structured **overview of the current state of the project**.
+- A **summary of what was completed** in this session.
+- A list of **current active goals**, showing *where we are in the process of achieving them*.
+- A section of **future goals**, both **specific** (next tangible steps) and **abstract** (larger objectives or directions).
+- Any **code or macro updates** performed, including new filenames or functions (e.g., updates to `extract_quick.C`, `aggregate_per_run_v2.C`, `plot_dashboard.C`).
+- Any **Makefile/CI updates** (e.g., `run-qa`, `generate-changelog`, `nan-check`, `update-latest`, `full-push` targets).
+- Any **newly added files** or data referenced (e.g., new per-run CSVs, plots, metrics, docs).
+- A clean **“Definition of Done”** for the current phase.
+- Clear **“Next Steps for the Agent”** instructions (Phases/Tasks).
+- Explicit removal of outdated instructions that no longer apply.
+
+### 2️⃣ `user_prelaunch_instructions_UPDATED.txt`
+A revised version of the prelaunch file that reflects:
+- New environment setup details (ROOT version, compiler notes, env variables).
+- Repo structural changes (notably `20250928/` sub-tree and `docs/` expectations).
+- Git/Git‑LFS handling requirements (if applicable).
+- Local steps required before launching Agent Mode again (e.g., paths to data, caching, credentials).
+- How to run the **automation targets** (e.g., `make full-push`).
+
+### 3️⃣ `project_documentation_UPDATED.md`
+A **comprehensive, professional** documentation refresh for users and contributors.  
+It should include (at minimum):
+- **Overview & scope** — what the pipeline does and its boundaries.
+- **Directory layout** — especially `20250928/data`, `20250928/lists`, `20250928/macros`, `20250928/out`, `20250928/docs`.
+- **Metrics & histograms mapping** — a table of metric names → ROOT histogram(s) → aggregation method (`mean`, `rms`, `p90`, `peak`, `asym`, etc.).
+- **Macros** — detailed sections for `extract_quick.C`, `aggregate_per_run_v2.C`, `plot_dashboard.C`:
+  - Inputs/outputs, assumptions, error handling, configuration (`metrics.conf`), extensions.
+- **Makefile targets** — what each does (e.g., `run-qa`, `generate-changelog`, `nan-check`, `update-latest`, `full-push`) and how they chain together.
+- **Adding a new metric** — step-by-step (edit `extract_quick.C`, extend `metrics.conf`, re‑aggregate, validate, publish).
+- **Troubleshooting** — common ROOT warnings (recovery, `StreamerInfo`, axis range), NaN handling, empty files, missing histograms.
+- **Quality guardrails** — how NaNs are detected and recorded into the changelog; how to interpret the dashboard.
+- **Appendices** — CSV schema (columns), naming conventions for metrics/per-run outputs, and dashboard plot meanings.
+
+### 4️⃣ `quickstart_user_guide_UPDATED.md` (short guide for new users)
+A concise (1–2 page) quickstart that covers:
+- Environment prerequisites (ROOT), repo clone, branch to use.
+- One-command run (`make full-push`) and what it does end-to-end.
+- Where to find outputs (per-file CSVs, per-run CSVs, plots, dashboard).
+- How to publish results to GitHub (push branch) and locate the latest changelog.
+- Top 3–5 common issues & fixes.
+
+### 5️⃣ *(Optional but recommended)* Update the **changelog**
+If a changelog is in use for the session, also produce:
+- `20250928/docs/CHANGELOG_REALDATA_<YYYYMMDDHHMM>.md` summarizing this session’s changes (use session timestamp).
+- Update or create `20250928/docs/CHANGELOG_LATEST.md` as a copy of the most recent changelog.
+
+> If the repo already has automation (e.g., a `Makefile` with `generate-changelog`, `nan-check`, `update-latest`), reflect that behavior in your outputs and do **not** duplicate steps.
+
+---
+
+## 🧭 Output Requirements
+
+- Provide **at least four downloadable files**:  
+  `handoff_for_new_agent_UPDATED.txt`, `user_prelaunch_instructions_UPDATED.txt`, `project_documentation_UPDATED.md`, `quickstart_user_guide_UPDATED.md`.  
+  *(If a changelog is requested, also produce `CHANGELOG_REALDATA_<ts>.md` and refresh `CHANGELOG_LATEST.md`.)*
+- Each file should fully replace its previous version (or clearly mark **“created new in this session”**).
+- Use the same **style and section headings** as the originals when applicable.
+- For docs intended for GitHub, **emit Markdown** with section anchors and tables where helpful.
+- **Naming & placement** (suggested defaults):
+  - Docs live under `20250928/docs/`
+  - Changelogs live under `20250928/docs/`
+  - CSVs/plots live under `20250928/out/`
+- Keep **file paths** relative and consistent with the current repo structure.
+- If you changed any filenames, **list the rename mapping** at the end of each updated file.
+
+---
+
+## 🧱 Structure of the Updated Handoff File
+
+The updated `handoff_for_new_agent_UPDATED.txt` must include these key sections:
+
+1. **Project Overview (High-Level Intent)**
+2. **Current Status (What’s Working / What’s New)**
+3. **Session Updates (Summary of This Session)**
+4. **Current Active Goals (Progress Breakdown)**
+5. **Future Goals (Specific + Abstract)**
+6. **Technical Details (Macros, Data, and CI)** — include any updates to `metrics.conf`, macros, or Makefile targets.
+7. **Definition of Done**
+8. **Next Steps for the Next Assistant**
+
+---
+
+## 📚 Structure of `project_documentation_UPDATED.md` (Guidance)
+
+1. Title & abstract  
+2. System diagram (textual, if no image) and directory map  
+3. Data inputs (files, lists) and outputs (CSVs, plots, dashboard)  
+4. Configuration (`metrics.conf`) — schema and examples  
+5. Metrics catalog (table: *metric_name*, *histogram(s)*, *method*, *notes*)  
+6. Macro guides — *extract*, *aggregate*, *plot* (inputs, logic, error handling, outputs)  
+7. Makefile & automation — target flow and typical runs  
+8. Extending the pipeline — adding metrics, adding plots/dashboards  
+9. Troubleshooting & known warnings (NaNs, `StreamerInfo`, axis errors, empty histograms)  
+10. Appendices — CSV schemas, naming conventions, glossary  
+
+---
+
+## ⚡ Structure of `quickstart_user_guide_UPDATED.md` (Guidance)
+
+- Prerequisites (ROOT, environment)  
+- Clone & branch  
+- **Run:** `make full-push` (explain what it does)  
+- Where outputs appear (`out/` + screenshots if available)  
+- How to commit & push results  
+- Troubleshooting (top fixes)  
+- Next steps: where to learn more (link to full documentation)  
+
+---
+
+## 🧩 How to Use This Prompt
+
+At the end of your current working session:
+1. Upload:
+   - `handoff_for_new_agent_REALDATA.txt`
+   - `user_prelaunch_instructions_REALDATA.txt`
+   - `project_documentation.md` *(or `.txt`)*
+   - `quickstart_user_guide.md` *(if present)*
+   - The session summary file (e.g., `session_update_summary.txt`)
+2. Paste this entire prompt into ChatGPT.  
+3. The assistant will analyze all inputs and generate the updated files listed above.  
+4. Download the updated files and add them under the appropriate project paths.  
+5. Commit and push to your working branch (e.g., `results/intt-metrics`).  
+6. The next session will use these updated files as the new baseline.
+
+---
+
+## 🧭 Why This Exists
+
+This process ensures the project remains **continuously documented**.  
+Each session’s updates become part of a living documentation cycle so the sPHENIX QA pipeline remains reproducible, maintainable, and progressively improving with each iteration.
+
+---
