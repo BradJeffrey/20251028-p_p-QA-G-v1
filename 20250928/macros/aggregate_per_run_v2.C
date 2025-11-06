@@ -1,6 +1,7 @@
 #include <TCanvas.h>
 #include <TGraphErrors.h>
 #include <TSystem.h>
+#include <TLatex.h>
 
 #include <algorithm>
 #include <cmath>
@@ -14,6 +15,7 @@
 #include <tuple>
 #include <utility>
 #include <vector>
+#include <limits>
 
 struct MetricDef { std::string name; std::string method; };
 
@@ -78,20 +80,20 @@ static Agg agg_sum(const std::vector<Row>& v) {
   Agg a; if (n>0) { a.y=sum; a.ey=std::sqrt(e2); } return a;
 }
 static Agg agg_mean(const std::vector<Row>& v) {
-  double s=0; int n=0; for (auto&r: v) if (std::isfinite(r.y)) { s+=r.y; ++n; }
+  double s=0; int n=0; for (auto& r: v) if (std::isfinite(r.y)) { s+=r.y; ++n; }
   Agg a; if (n>0) { a.y=s/n; a.ey=0; } return a;
 }
 static Agg agg_wmean_ivar(const std::vector<Row>& v) {
   double sw=0, swy=0;
-  for (auto&r: v) {
+  for (auto& r: v) {
     double w = (r.ey>0 && std::isfinite(r.ey)) ? 1.0/(r.ey*r.ey) : 0.0;
-    if (w>0) { sw += w; swy += w*r.y; }
+    if (w>0 && std::isfinite(r.y)) { sw += w; swy += w*r.y; }
   }
   Agg a; if (sw>0) { a.y=swy/sw; a.ey=std::sqrt(1.0/sw); } return a;
 }
 static Agg agg_wmean_entries(const std::vector<Row>& v) {
   double sw=0, swy=0;
-  for (auto&r: v) if (std::isfinite(r.y)) { double w=std::max(0.0,r.w); sw+=w; swy+=w*r.y; }
+  for (auto& r: v) if (std::isfinite(r.y) && r.w>0) { double w=r.w; sw+=w; swy+=w*r.y; }
   Agg a; if (sw>0) { a.y=swy/sw; a.ey=0; } return a;
 }
 
@@ -102,41 +104,58 @@ static void write_and_plot(const std::string& metric, const std::map<int,Agg>& b
   auto gr = std::make_unique<TGraphErrors>();
   gr->SetName(("gr_"+metric+"_perrun").c_str());
   int i=0;
+  std::vector<double> ys;
   for (auto& kv : byrun) {
-    out<<kv.first<<","<<kv.second.y<<","<<kv.second.ey<<"\n";
-    gr->SetPoint(i, kv.first, kv.second.y);
-    gr->SetPointError(i, 0.0, kv.second.ey);
+    double y = kv.second.y;
+    double ey = kv.second.ey;
+    out<<kv.first<<","<<y<<","<<ey<<"\n";
+    gr->SetPoint(i, kv.first, y);
+    gr->SetPointError(i, 0.0, ey);
+    if (std::isfinite(y)) ys.push_back(y);
     ++i;
   }
   TCanvas c(("c_"+metric+"_perrun").c_str(), ("per-run: "+metric).c_str(), 900, 600);
   gr->SetTitle((metric+" (per run);Run;"+metric).c_str());
-  gr->Draw("AP");
+  if (!ys.empty()) {
+    double ymin=*std::min_element(ys.begin(), ys.end());
+    double ymax=*std::max_element(ys.begin(), ys.end());
+    if (!std::isfinite(ymin) || !std::isfinite(ymax)) {
+      ymin=0; ymax=1;
+    }
+    if (ymin == ymax) {
+      double eps = (ymax == 0.0 ? 1.0 : std::abs(ymax)*0.05);
+      ymin -= eps;
+      ymax += eps;
+    }
+    gr->GetYaxis()->SetRangeUser(ymin, ymax);
+    gr->Draw("AP");
+  } else {
+    TLatex t;
+    t.SetTextAlign(22);
+    t.SetTextSize(0.04);
+    t.DrawLatex(0.5, 0.5, "NO FINITE POINTS FOR THIS METRIC/RANGE");
+  }
   c.SaveAs(("out/metric_"+metric+"_perrun.pdf").c_str());
   c.SaveAs(("out/metric_"+metric+"_perrun.png").c_str());
 }
 
-// Usage: .x macros/aggregate_per_run_v2.C("metrics.conf","ivar")
 // weighting: "ivar" (default) | "entries" | "mean"
 void aggregate_per_run_v2(const char* conf="metrics.conf", const char* weighting="ivar")
 {
   auto defs = load_conf(conf);
   if (defs.empty()) { std::cerr<<"[ERROR] no metrics in "<<conf<<"\n"; return; }
   std::string W = weighting;
-
   for (auto& kv : defs) {
     const auto& mname  = kv.first;
     const auto& method = kv.second.method;
-
     std::string inpath = "out/metrics_"+mname+".csv";
     std::vector<Row> rows;
     if (!read_metric_csv(inpath, rows) || rows.empty()) {
       std::cerr<<"[WARN] no rows in "<<inpath<<"\n";
       continue;
     }
-
     std::map<int, std::vector<Row>> g;
     for (auto& r: rows) g[r.run].push_back(r);
-
     std::map<int,Agg> byrun;
     for (auto& runvec : g) {
       const auto& vec = runvec.second;
@@ -144,7 +163,7 @@ void aggregate_per_run_v2(const char* conf="metrics.conf", const char* weighting
       if (method=="sum") a = agg_sum(vec);
       else if (W=="mean") a = agg_mean(vec);
       else if (W=="entries") a = agg_wmean_entries(vec);
-      else a = agg_wmean_ivar(vec); // default
+      else a = agg_wmean_ivar(vec);
       byrun[runvec.first] = a;
     }
     write_and_plot(mname, byrun);
