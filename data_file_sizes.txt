@@ -1,0 +1,258 @@
+total 478120
+drwxr-xr-x  4 brad  staff   128B Oct 28 01:21 RootTasks
+-rw-r--r--  1 brad  staff   6.9K Nov  6 00:18 mock.root
+-rw-r--r--  1 brad  staff    17M Oct 28 14:41 run66522.root
+-rw-r--r--@ 1 brad  staff    20M Oct  6 10:11 run66684.root
+-rw-r--r--@ 1 brad  staff    18M Oct  6 10:11 run66685.root
+-rw-r--r--@ 1 brad  staff    12M Oct  6 10:12 run68520.root
+-rw-r--r--@ 1 brad  staff    21M Oct  6 10:13 run68522.root
+-rw-r--r--@ 1 brad  staff    20M Oct  7 12:03 run68523.root
+-rw-r--r--@ 1 brad  staff   5.8M Oct  7 12:03 run68531.root
+-rw-r--r--@ 1 brad  staff    19M Oct  7 12:04 run68548.root
+-rw-r--r--@ 1 brad  staff    20M Oct  7 12:04 run68550.root
+-rw-r--r--@ 1 brad  staff    21M Oct  7 12:05 run68554.root
+-rw-r--r--@ 1 brad  staff    21M Oct  7 12:05 run68584.root
+-rw-r--r--@ 1 brad  staff    20M Oct  7 13:31 run68589.root
+-rw-r--r--@ 1 brad  staff    21M Oct  7 13:31 run68604.root
+
+data/RootTasks:
+total 6792
+drwxr-xr-x  3 brad  staff    96B Jun 19 00:53 Taks1V1001
+-rw-r--r--  1 brad  staff   3.3M Jun 19 08:49 fitted_histograms_merged.root
+
+data/RootTasks/Taks1V1001:
+total 0
+drwxr-xr-x  23 brad  staff   736B Oct 28 01:23 Task1V1004
+
+data/RootTasks/Taks1V1001/Task1V1004:
+total 43816
+drwxr-xr-x   3 brad  staff    96B Oct 28 01:22 Project_20250928Start
+drwxr-xr-x   3 brad  staff    96B Sep 28 23:49 Project_20250928Start end 20251015
+drwxr-xr-x   8 brad  staff   256B Sep 23 00:27 QuarkoniumGroup_Task20250707
+drwxr-xr-x   3 brad  staff    96B Jul  4  2024 Task13
+drwxr-xr-x   3 brad  staff    96B Jul 16  2024 Task18
+drwxr-xr-x   3 brad  staff    96B Aug  5  2024 Task19
+drwxr-xr-x   3 brad  staff    96B Jul 16  2024 Task20
+drwxr-xr-x   3 brad  staff    96B Oct  7  2024 Task23
+drwxr-xr-x   4 brad  staff   128B Aug 19  2024 Task24
+drwxr-xr-x   3 brad  staff    96B Aug 28  2024 Task25
+drwxr-xr-x   3 brad  staff    96B Oct  7  2024 Task26
+drwxr-xr-x   3 brad  staff    96B Jul  3  2024 Task8
+drwxr-xr-x   3 brad  staff    96B Jan 24  2025 coresoftware
+-rw-r--r--   1 brad  staff   9.8K Jul 10  2024 histogram.root
+-rw-r--r--   1 brad  staff    21M Jul 23  2024 particles.root
+drwxr-xr-x   6 brad  staff   192B Apr 12  2025 sPHENIX_pp_running
+drwxr-xr-x   4 brad  staff   128B Jul 10 13:25 sPHENIX_pp_running_V11
+drwxr-xr-x   5 brad  staff   160B Jan 23  2025 sPHENIX_pp_running_V7
+drwxr-xr-x   5 brad  staff   160B Jan 27  2025 sPHENIX_pp_running_V8
+drwxr-xr-x  16 brad  staff   512B Jun 29 20:39 sPHENIX_pp_running_V9
+drwxr-xr-x   4 brad  staff   128B Jan 27  2025 sPHENIX_pp_running_V9 copy
+
+data/RootTasks/Taks1V1001/Task1V1004/Project_20250928Start:
+total 0
+drwxr-xr-x  3 brad  staff    96B Oct 28 01:23 20250928
+
+data/RootTasks/Taks1V1001/Task1V1004/Project_20250928Start/20250928:
+total 33984
+-rw-r--r--  1 brad  staff    17M Sep 27 12:22 run66522.root
+
+data/RootTasks/Taks1V1001/Task1V1004/Project_20250928Start end 20251015:
+total 0
+drwxr-xr-x  3 brad  staff    96B Oct  7 15:55 20250928
+
+data/RootTasks/Taks1V1001/Task1V1004/Project_20250928Start end 20251015/20250928:
+total 33984
+-rw-r--r--  1 brad  staff    17M Sep 27 12:22 run66522.root
+
+data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707:
+total 0
+drwxr-xr-x  5 brad  staff   160B Jul 10 01:50 V5_works
+drwxr-xr-x  5 brad  staff   160B Sep 22 20:37 data 
+drwxr-xr-x  5 brad  staff   160B Jul 10 01:40 v3
+drwxr-xr-x  5 brad  staff   160B Jul 10 01:46 v4
+drwxr-xr-x  5 brad  staff   160B Jul 10 02:47 v6_works
+drwxr-xr-x  5 brad  staff   160B Jul 10 02:48 v7_worskish
+
+data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/V5_works:
+total 5424
+-rw-r--r--  1 brad  staff   780K Jul  9 15:45 clusters_seeds_66641-0.root_qa.root
+-rw-r--r--  1 brad  staff   903K Jul  9 15:45 clusters_seeds_66684-0.root_qa.root
+-rw-r--r--  1 brad  staff   1.0M Jul  9 15:45 clusters_seeds_66685-0.root_qa.root
+
+data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/data :
+total 5424
+-rw-r--r--  1 brad  staff   780K Jul  9 15:45 clusters_seeds_66641-0.root_qa.root
+-rw-r--r--  1 brad  staff   903K Jul  9 15:45 clusters_seeds_66684-0.root_qa.root
+-rw-r--r--  1 brad  staff   1.0M Jul  9 15:45 clusters_seeds_66685-0.root_qa.root
+
+data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v3:
+total 5424
+-rw-r--r--  1 brad  staff   780K Jul  9 15:45 clusters_seeds_66641-0.root_qa.root
+-rw-r--r--  1 brad  staff   903K Jul  9 15:45 clusters_seeds_66684-0.root_qa.root
+-rw-r--r--  1 brad  staff   1.0M Jul  9 15:45 clusters_seeds_66685-0.root_qa.root
+
+data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v4:
+total 5424
+-rw-r--r--  1 brad  staff   780K Jul  9 15:45 clusters_seeds_66641-0.root_qa.root
+-rw-r--r--  1 brad  staff   903K Jul  9 15:45 clusters_seeds_66684-0.root_qa.root
+-rw-r--r--  1 brad  staff   1.0M Jul  9 15:45 clusters_seeds_66685-0.root_qa.root
+
+data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v6_works:
+total 5424
+-rw-r--r--  1 brad  staff   780K Jul  9 15:45 clusters_seeds_66641-0.root_qa.root
+-rw-r--r--  1 brad  staff   903K Jul  9 15:45 clusters_seeds_66684-0.root_qa.root
+-rw-r--r--  1 brad  staff   1.0M Jul  9 15:45 clusters_seeds_66685-0.root_qa.root
+
+data/RootTasks/Taks1V1001/Task1V1004/QuarkoniumGroup_Task20250707/v7_worskish:
+total 5424
+-rw-r--r--  1 brad  staff   780K Jul  9 15:45 clusters_seeds_66641-0.root_qa.root
+-rw-r--r--  1 brad  staff   903K Jul  9 15:45 clusters_seeds_66684-0.root_qa.root
+-rw-r--r--  1 brad  staff   1.0M Jul  9 15:45 clusters_seeds_66685-0.root_qa.root
+
+data/RootTasks/Taks1V1001/Task1V1004/Task13:
+total 24
+-rw-r--r--  1 brad  staff   9.4K Jul  1  2024 GaussianCauchyPeak.root
+
+data/RootTasks/Taks1V1001/Task1V1004/Task18:
+total 1168
+-rw-r--r--  1 brad  staff   583K Jul 11  2024 3Dhistogram.root
+
+data/RootTasks/Taks1V1001/Task1V1004/Task19:
+total 24
+-rw-r--r--  1 brad  staff   9.8K Jul 15  2024 histogram.root
+
+data/RootTasks/Taks1V1001/Task1V1004/Task20:
+total 24
+-rw-r--r--  1 brad  staff   9.8K Jul 11  2024 histogram.root
+
+data/RootTasks/Taks1V1001/Task1V1004/Task23:
+total 43792
+-rw-r--r--  1 brad  staff    21M Jul 23  2024 particles.root
+
+data/RootTasks/Taks1V1001/Task1V1004/Task24:
+total 43792
+drwxr-xr-x  3 brad  staff    96B Aug  1  2024 Task23_old_4
+-rw-r--r--  1 brad  staff    21M Jul 23  2024 particles.root
+
+data/RootTasks/Taks1V1001/Task1V1004/Task24/Task23_old_4:
+total 43792
+-rw-r--r--  1 brad  staff    21M Jul 23  2024 particles.root
+
+data/RootTasks/Taks1V1001/Task1V1004/Task25:
+total 43792
+-rw-r--r--  1 brad  staff    21M Jul 23  2024 particles.root
+
+data/RootTasks/Taks1V1001/Task1V1004/Task26:
+total 43792
+-rw-r--r--  1 brad  staff    21M Jul 23  2024 particles.root
+
+data/RootTasks/Taks1V1001/Task1V1004/Task8:
+total 208
+-rw-r--r--  1 brad  staff   102K Jun 23  2024 MakeProfile.root
+
+data/RootTasks/Taks1V1001/Task1V1004/coresoftware:
+total 0
+drwxr-xr-x  3 brad  staff    96B Jan  2  2025 calibrations
+
+data/RootTasks/Taks1V1001/Task1V1004/coresoftware/calibrations:
+total 0
+drwxr-xr-x  3 brad  staff    96B Jan  2  2025 tpc
+
+data/RootTasks/Taks1V1001/Task1V1004/coresoftware/calibrations/tpc:
+total 0
+drwxr-xr-x  3 brad  staff    96B Jan  2  2025 fillDigitalCurrentMaps
+
+data/RootTasks/Taks1V1001/Task1V1004/coresoftware/calibrations/tpc/fillDigitalCurrentMaps:
+total 0
+drwxr-xr-x  3 brad  staff    96B Jan  2  2025 Files
+
+data/RootTasks/Taks1V1001/Task1V1004/coresoftware/calibrations/tpc/fillDigitalCurrentMaps/Files:
+total 1880
+-rw-r--r--  1 brad  staff   939K Jan  2  2025 TPCGainMaps.root
+
+data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running:
+total 20272
+drwxr-xr-x  3 brad  staff    96B Oct 11  2024 DSTs
+drwxr-xr-x  3 brad  staff    96B Jan  2  2025 coresoftware
+-rw-r--r--  1 brad  staff   8.7M Nov  7  2024 hists_00053744-0000.root
+-rw-r--r--  1 brad  staff   1.2M Dec  3  2024 subtracted_histograms.root
+
+data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running/DSTs:
+total 2769408
+-rw-r--r--  1 brad  staff   1.3G Oct 11  2024 DST_CALOR-00053744-0000.root
+
+data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running/coresoftware:
+total 0
+drwxr-xr-x  3 brad  staff    96B Oct 11  2024 calibrations
+
+data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running/coresoftware/calibrations:
+total 0
+drwxr-xr-x  3 brad  staff    96B Oct 11  2024 tpc
+
+data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running/coresoftware/calibrations/tpc:
+total 0
+drwxr-xr-x  3 brad  staff    96B Oct 11  2024 fillDigitalCurrentMaps
+
+data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running/coresoftware/calibrations/tpc/fillDigitalCurrentMaps:
+total 0
+drwxr-xr-x  3 brad  staff    96B Oct 11  2024 Files
+
+data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running/coresoftware/calibrations/tpc/fillDigitalCurrentMaps/Files:
+total 1880
+-rw-r--r--  1 brad  staff   939K Oct 11  2024 TPCGainMaps.root
+
+data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V11:
+total 2772424
+-rw-r--r--  1 brad  staff   1.3G Jun  6 05:08 DST_CALOR-00053744-0000.root
+-rw-r--r--  1 brad  staff   1.5M Jun  6 05:47 hists_00053744-0000.root
+
+data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V7:
+total 2769424
+-rw-r--r--  1 brad  staff   1.3G Jan  2  2025 DST_CALOR-00053744-0000.root
+-rw-r--r--  1 brad  staff   3.8K Jan  2  2025 epdMultiplicitySEPD.root
+-rw-r--r--  1 brad  staff   459B Jan  2  2025 robustCalHists_SEPD.root
+
+data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V8:
+total 2775968
+-rw-r--r--  1 brad  staff   1.3G Jan  2  2025 DST_CALOR-00053744-0000.root
+-rw-r--r--  1 brad  staff   6.8K Jan 24  2025 epdMultiplicity.root
+-rw-r--r--  1 brad  staff   3.2M Jan 24  2025 robustCalHists.root
+
+data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9:
+total 2814888
+-rw-r--r--  1 brad  staff   1.3G Jan  2  2025 DST_CALOR-00053744-0000.root
+drwxr-xr-x  4 brad  staff   128B Jun 24 21:22 Good old runs results (v13)
+drwxr-xr-x  3 brad  staff    96B Jun 26 13:23 LastRunB4_06262025GroupMeeting
+-rw-r--r--  1 brad  staff   443B Apr 12  2025 epdMultiplicity.root
+-rw-r--r--  1 brad  staff   4.3K Jun  6 01:48 fit_results_DST_CALOR-00053744-0000_summary.root
+-rw-r--r--  1 brad  staff   4.4K Jun  6 01:55 fit_results_v6_DST_CALOR-00053744-0000_summary.root
+-rw-r--r--  1 brad  staff   5.9M Jun 18 21:10 fitted_histograms.root
+-rw-r--r--  1 brad  staff   5.9M Jun 16 15:50 fitted_histograms20250616414.root
+-rw-r--r--  1 brad  staff   5.9M Jun 18 03:57 fitted_histograms_BestRun.root
+-rw-r--r--  1 brad  staff   463B Jun  6 02:59 processed_histograms.root
+-rw-r--r--  1 brad  staff   3.4M Apr 12  2025 robustCalHists.root
+drwxr-xr-x  3 brad  staff    96B Jun 18 23:12 sPHENIX_pp_running
+-rw-r--r--  1 brad  staff   1.2M Jun  6 03:09 subtracted_histograms.root
+drwxr-xr-x  3 brad  staff    96B Jun 26 05:19 v23
+
+data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/Good old runs results (v13):
+total 13584
+-rw-r--r--  1 brad  staff   3.3M Jun 19 08:49 fitted_histograms_merged.root
+-rw-r--r--  1 brad  staff   3.3M Jun 19 08:49 fitted_histograms_merged_0.root
+
+data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/LastRunB4_06262025GroupMeeting:
+total 6520
+-rw-r--r--  1 brad  staff   3.2M Jun 26 06:58 fitted_histograms_merged.root
+
+data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/sPHENIX_pp_running:
+total 3016
+-rw-r--r--  1 brad  staff   1.5M Apr 13  2025 hists_00053744-0000.root
+
+data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9/v23:
+total 6512
+-rw-r--r--  1 brad  staff   3.2M Jun 26 04:49 fitted_histograms_merged.root
+
+data/RootTasks/Taks1V1001/Task1V1004/sPHENIX_pp_running_V9 copy:
+total 6552
+-rw-r--r--  1 brad  staff   5.2K Jan 24  2025 epdMultiplicity.root
+-rw-r--r--  1 brad  staff   3.2M Jan 24  2025 robustCalHists.root

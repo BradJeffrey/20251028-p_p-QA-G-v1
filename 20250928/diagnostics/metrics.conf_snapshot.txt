@@ -1,0 +1,6 @@
+intt_adc_peak, h_InttRawHitQA_adc, maxbin
+intt_adc_median_p50, h_InttRawHitQA_adc, median
+intt_adc_p90, h_InttRawHitQA_adc, p90
+intt_phi_uniform_r1, h_InttClusterQA_clusterPhi_incl, ks_uniform_p
+intt_phi_chi2_reduced, h_InttClusterQA_clusterPhi_incl, chi2_uniform_red
+intt_bco_peak, h_InttRawHitQA_bco, maxbin
