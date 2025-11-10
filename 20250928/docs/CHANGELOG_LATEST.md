@@ -1,5 +1,5 @@
 # 🧠 sPHENIX QA Pipeline — Auto Changelog (Real Data)
-**Generated:** Thu Nov  6 06:50:32 EST 2025
+**Generated:** Mon Nov 10 18:27:49 EST 2025
 
 ## Pipeline outputs in 20250928/out
 metrics_cluster_phi_intt_rms.csv
@@ -23,11 +23,11 @@ metrics_intt_phi_uniform_r1.csv
 metrics_intt_phi_uniform_r1_perrun.csv
 
 ## Commit Summary
-3352705 Fix: handle empty or flat metrics; add y-axis padding and skip zero-weight rows
+c390dcf Automated QA run + changelog (202511060650)
 
 ⚠️  **Warning:** One or more metrics contain NaN values (detected automatically).
 **Total NaN entries detected:**       26
-🕒 **Last QA NaN check:** 2025-11-06 06:50:32 EST
+🕒 **Last QA NaN check:** 2025-11-10 18:27:49 EST
 **Affected runs:** (no explicit run numbers found)
 Affected files:
 - <span style="color:red">metrics_intt_hits_asym.csv</span>
