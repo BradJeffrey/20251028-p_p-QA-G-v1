@@ -1,0 +1,82 @@
+
+# ============================================================
+#  sPHENIX Real Data QA Pipeline - Automated Workflow (Appended)
+# ============================================================
+
+TIMESTAMP := $(shell date +"%Y%m%d%H%M")
+OUTDIR := 20250928/out
+DOCSDIR := 20250928/docs
+
+.PHONY: run-qa update-latest generate-changelog full-push
+
+run-qa:
+	cd 20250928 && \
+	root -l -b -q 'macros/extract_quick.C("lists/files.txt")' && \
+	root -l -b -q 'macros/aggregate_per_run_v2.C("metrics.conf","entries")' && \
+	root -l -b -q 'macros/plot_dashboard.C()'
+
+generate-changelog:
+	cd $(DOCSDIR) && \
+	echo "# 🧠 sPHENIX QA Pipeline — Auto Changelog (Real Data)" > CHANGELOG_REALDATA_$(TIMESTAMP).md && \
+	echo "**Generated:** $$(date)" >> CHANGELOG_REALDATA_$(TIMESTAMP).md && \
+	echo "" >> CHANGELOG_REALDATA_$(TIMESTAMP).md && \
+	echo "## Pipeline outputs in $(OUTDIR)" >> CHANGELOG_REALDATA_$(TIMESTAMP).md && \
+	ls -1 ../out | grep metrics_ >> CHANGELOG_REALDATA_$(TIMESTAMP).md && \
+	echo "" >> CHANGELOG_REALDATA_$(TIMESTAMP).md && \
+	echo "## Commit Summary" >> CHANGELOG_REALDATA_$(TIMESTAMP).md && \
+	git log -1 --oneline >> CHANGELOG_REALDATA_$(TIMESTAMP).md
+
+update-latest:
+	cd $(DOCSDIR) && \
+	latest=$$(ls -t CHANGELOG_REALDATA_*.md | head -n1) && \
+	cp $$latest CHANGELOG_LATEST.md
+	git add $(DOCSDIR)/CHANGELOG_LATEST.md
+	git commit -m "Update CHANGELOG_LATEST.md to $$latest" || true
+	git push origin results/intt-metrics
+
+full-push: run-qa generate-changelog update-latest
+	git add $(OUTDIR) $(DOCSDIR)/CHANGELOG_REALDATA_$(TIMESTAMP).md
+	git commit -m "Automated QA run + changelog ($(TIMESTAMP))"
+	git push origin results/intt-metrics
+
+
+# ============================================================
+#  sPHENIX Real Data QA Pipeline - Automated Workflow (Appended)
+# ============================================================
+
+TIMESTAMP := $(shell date +"%Y%m%d%H%M")
+OUTDIR := 20250928/out
+DOCSDIR := 20250928/docs
+
+.PHONY: run-qa update-latest generate-changelog full-push
+
+run-qa:
+	cd 20250928 && \
+	root -l -b -q 'macros/extract_quick.C("lists/files.txt")' && \
+	root -l -b -q 'macros/aggregate_per_run_v2.C("metrics.conf","entries")' && \
+	root -l -b -q 'macros/plot_dashboard.C()'
+
+generate-changelog:
+	cd $(DOCSDIR) && \
+	echo "# 🧠 sPHENIX QA Pipeline — Auto Changelog (Real Data)" > CHANGELOG_REALDATA_$(TIMESTAMP).md && \
+	echo "**Generated:** $$(date)" >> CHANGELOG_REALDATA_$(TIMESTAMP).md && \
+	echo "" >> CHANGELOG_REALDATA_$(TIMESTAMP).md && \
+	echo "## Pipeline outputs in $(OUTDIR)" >> CHANGELOG_REALDATA_$(TIMESTAMP).md && \
+	ls -1 ../out | grep metrics_ >> CHANGELOG_REALDATA_$(TIMESTAMP).md && \
+	echo "" >> CHANGELOG_REALDATA_$(TIMESTAMP).md && \
+	echo "## Commit Summary" >> CHANGELOG_REALDATA_$(TIMESTAMP).md && \
+	git log -1 --oneline >> CHANGELOG_REALDATA_$(TIMESTAMP).md
+
+update-latest:
+	cd $(DOCSDIR) && \
+	latest=$$(ls -t CHANGELOG_REALDATA_*.md | head -n1) && \
+	cp $$latest CHANGELOG_LATEST.md
+	git add $(DOCSDIR)/CHANGELOG_LATEST.md
+	git commit -m "Update CHANGELOG_LATEST.md to $$latest" || true
+	git push origin results/intt-metrics
+
+full-push: run-qa generate-changelog update-latest
+	git add $(OUTDIR) $(DOCSDIR)/CHANGELOG_REALDATA_$(TIMESTAMP).md
+	git commit -m "Automated QA run + changelog ($(TIMESTAMP))"
+	git push origin results/intt-metrics
+
