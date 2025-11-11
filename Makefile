@@ -170,3 +170,5 @@ nan-check:
 		echo "✅ No NaN values detected."; \
 	fi
 
+run-qa:
+	$(MAKE) -C 20250928 run-qa

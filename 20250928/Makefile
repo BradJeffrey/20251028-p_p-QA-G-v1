@@ -109,3 +109,30 @@ clean:
 
 clobber: clean
 	@rm -f out/metrics_*.csv out/_stamp.txt out/metrics_perrun_wide.csv out/consistency_summary.csv
+# ---------- QA extensions ----------
+ROBUST_W ?= 5
+
+robust:
+	@echo "[Makefile] Running robust z (W=$(ROBUST_W))..."
+	root -l -b -q 'macros/add_robust_z.C("metrics.conf",$(ROBUST_W))'
+
+robust-aliases:
+	@echo "[Makefile] Copy metrics_* -> metric_* per-run CSV aliases"
+	@for f in out/metrics_*_perrun.csv; do \
+	  dest=$${f/out\/metrics_/out\/metric_}; \
+	  cp -f "$$f" "$$dest"; \
+	done
+
+run-qa:
+	@echo "[Makefile] extract → aggregate → robust → alias → dashboard"
+	root -l -b -q 'macros/extract_quick.C("lists/files.txt")'
+	root -l -b -q 'macros/aggregate_per_run_v2.C("metrics.conf","entries")'
+	$(MAKE) robust ROBUST_W=$(ROBUST_W)
+	$(MAKE) robust-aliases
+	root -l -b -q 'macros/plot_dashboard.C()'
+
+check-robust:
+	./scripts/validate_perrun_schema.sh
+
+z-summary:
+	./scripts/summary_outliers.sh
