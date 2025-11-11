@@ -1,14 +1,1 @@
-run,value,error
-66522,61.5,0
-66684,43.5,0
-66685,122.5,0
-68520,122.5,0
-68522,34.5,0
-68523,43.5,0
-68531,62.5,0
-68548,122.5,0
-68550,122.5,0
-68554,6.5,0
-68584,90.5,0
-68589,122.5,0
-68604,102.5,0
+run,value,stat_err,entries,neighbors_median,neighbors_mad,z_local,is_outlier_weak,is_outlier_strong

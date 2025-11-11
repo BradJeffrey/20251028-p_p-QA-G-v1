@@ -1,14 +1,1 @@
-run,value,error
-66522,nan,0
-66684,nan,0
-66685,nan,0
-68520,nan,0
-68522,nan,0
-68523,nan,0
-68531,nan,0
-68548,nan,0
-68550,nan,0
-68554,nan,0
-68584,nan,0
-68589,nan,0
-68604,nan,0
+run,value,stat_err,entries,neighbors_median,neighbors_mad,z_local,is_outlier_weak,is_outlier_strong
