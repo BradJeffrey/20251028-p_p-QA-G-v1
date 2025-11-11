@@ -1,5 +1,5 @@
 # 🧠 sPHENIX QA Pipeline — Auto Changelog (Real Data)
-**Generated:** Mon Nov 10 18:27:49 EST 2025
+**Generated:** Tue Nov 11 14:27:07 EST 2025
 
 ## Pipeline outputs in 20250928/out
 metrics_cluster_phi_intt_rms.csv
@@ -23,11 +23,11 @@ metrics_intt_phi_uniform_r1.csv
 metrics_intt_phi_uniform_r1_perrun.csv
 
 ## Commit Summary
-c390dcf Automated QA run + changelog (202511060650)
+20e4d83 Update Makefile
 
 ⚠️  **Warning:** One or more metrics contain NaN values (detected automatically).
 **Total NaN entries detected:**       26
-🕒 **Last QA NaN check:** 2025-11-10 18:27:49 EST
+🕒 **Last QA NaN check:** 2025-11-11 14:27:07 EST
 **Affected runs:** (no explicit run numbers found)
 Affected files:
 - <span style="color:red">metrics_intt_hits_asym.csv</span>
