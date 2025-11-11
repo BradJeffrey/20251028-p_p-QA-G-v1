@@ -6,14 +6,15 @@ MARKERS     ?= config/markers.csv
 THRESH      ?= config/thresholds.csv
 WEIGHTING   ?= ivar                       # ivar | entries | mean
 WIDE        ?= out/metrics_perrun_wide.csv
+ROBUST_W    ?= 5
 
 # core vs full bundles
-CORE_STEPS  = extract physqa aggregate merge analyze stamp
+CORE_STEPS  = extract physqa aggregate robust merge analyze stamp
 FULL_STEPS  = $(CORE_STEPS) derived segmentcv intthealth control pca report
 
 DATE_TAG    := $(shell date +"%Y%m%d_%H%M%S")
 
-.PHONY: all core full extract physqa aggregate merge analyze derived segmentcv intthealth control pca report stamp check list_runs clean clobber
+.PHONY: all core full extract physqa aggregate robust merge analyze derived segmentcv intthealth control pca report stamp check list_runs clean clobber
 
 all: full
 core: $(CORE_STEPS)
@@ -31,6 +32,10 @@ physqa:
 aggregate:
 	@mkdir -p out
 	$(ROOTCMD) 'macros/aggregate_per_run_v2.C("$(CONF)","$(WEIGHTING)")'
+
+robust:
+	@echo "[Makefile] Running robust z (W=$(ROBUST_W))..."
+	$(ROOTCMD) 'macros/add_robust_z.C("$(CONF)",$(ROBUST_W))'
 
 merge:
 	@mkdir -p out
