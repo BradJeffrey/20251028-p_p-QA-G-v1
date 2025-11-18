@@ -1,102 +1,63 @@
 #include <TCanvas.h>
-#include <TPrincipal.h>
+#include <TDecompSVD.h>
 #include <TGraph.h>
-#include <TSystem.h>
-#include <TLatex.h>
-
-#include <algorithm>
+#include <TMatrixD.h>
+#include <TText.h>
+#include <TVectorD.h>
 #include <fstream>
-#include <iostream>
-#include <map>
-#include <set>
 #include <sstream>
-#include <string>
 #include <vector>
+#include <string>
+#include <limits>
 
-// Read CSV into header + rows
-static bool read_csv(const std::string& path, std::vector<std::string>& cols,
-                     std::vector<int>& runs, std::vector<std::vector<double>>& X)
-{
+static bool ReadWideCSV(const std::string& path, std::vector<int>& runs, TMatrixD& X, std::vector<std::string>& cols){
   std::ifstream in(path); if(!in) return false;
-  std::string s; if(!std::getline(in,s)) return false; // header
-  std::stringstream sh(s); std::string t;
-  while (std::getline(sh,t,',')) cols.push_back(t);
-
-  int runcol = 0;
-  while (std::getline(in,s)) {
-    if (s.empty()) continue;
-    std::stringstream ss(s); std::vector<std::string> toks; std::string u;
-    while (std::getline(ss,u,',')) toks.push_back(u);
-    if (toks.size()!=cols.size()) continue;
-    runs.push_back(std::stoi(toks[runcol]));
-    std::vector<double> row;
-    for (size_t j=1;j<toks.size();++j) row.push_back( toks[j].empty()? std::numeric_limits<double>::quiet_NaN() : std::stod(toks[j]) );
-    X.push_back(row);
+  std::string line; if(!std::getline(in,line)) return false;
+  std::stringstream hs(line); std::string cell; std::vector<std::string> header;
+  while(std::getline(hs,cell,',')) header.push_back(cell);
+  if(header.size()<3) return false;
+  cols.assign(header.begin()+1, header.end());
+  std::vector<std::vector<double>> rows;
+  while(std::getline(in,line)){
+    if(line.empty()) continue;
+    std::stringstream ss(line);
+    std::getline(ss,cell,','); runs.push_back(std::stoi(cell));
+    std::vector<double> row; while(std::getline(ss,cell,',')){
+      if(cell=="NaN"||cell=="nan"||cell=="") row.push_back(std::numeric_limits<double>::quiet_NaN());
+      else row.push_back(std::stod(cell));
+    } rows.push_back(row);
   }
-  return !X.empty();
+  std::vector<std::vector<double>> clean; std::vector<int> cleanRuns;
+  for(size_t i=0;i<rows.size();++i){ bool ok=true; for(double v:rows[i]) if(!(v==v)){ ok=false; break;} if(ok){ clean.push_back(rows[i]); cleanRuns.push_back(runs[i]); } }
+  runs.swap(cleanRuns);
+  int N=(int)clean.size(), P=(int)cols.size(); if(N<3||P<2) return false;
+  X.ResizeTo(N,P);
+  for(int i=0;i<N;++i) for(int j=0;j<P;++j) X(i,j)=clean[i][j];
+  for(int j=0;j<P;++j){ double mu=0; for(int i=0;i<N;++i) mu+=X(i,j); mu/=N;
+    double s2=0; for(int i=0;i<N;++i){ double d=X(i,j)-mu; s2+=d*d; } s2=(N>1)?s2/(N-1):0;
+    double sd=(s2>0)?std::sqrt(s2):1.0; for(int i=0;i<N;++i) X(i,j)=(X(i,j)-mu)/sd; }
+  return true;
 }
 
-// Usage: .x macros/pca_multimetric.C("out/metrics_perrun_wide.csv")
-void pca_multimetric(const char* wide="out/metrics_perrun_wide.csv")
-{
-  std::vector<std::string> cols; std::vector<int> runs; std::vector<std::vector<double>> X;
-  if (!read_csv(wide, cols, runs, X)) { std::cerr<<"[ERR] missing "<<wide<<"\n"; return; }
-  // choose a subset of columns (skip run)
-  std::set<std::string> keep = {
-    "cluster_size_intt_mean",
-    "cluster_phi_intt_rms",
-    "intt_adc_peak",
-    "intt_hits_asym",
-    "intt_phi_uniform_r1",
-    "intt_adc_median_p50",
-    "mvtx_cluster_size_mean",
-    "mvtx_phi_uniform_r1"
-  };
-  // build matrix (rows = runs, cols = chosen metrics)
-  std::vector<int> useIdx;
-  for (size_t j=1;j<cols.size();++j) if (keep.count(cols[j])) useIdx.push_back(j-1);
-  if (useIdx.empty()) { std::cerr<<"[INFO] no matching columns found\n"; return; }
+void pca_multimetric(const char* wide_csv="out/metrics_perrun_wide.csv"){
+  std::vector<int> runs; std::vector<std::string> cols; TMatrixD X;
+  if(!ReadWideCSV(wide_csv,runs,X,cols)){ printf("[ERR] cannot read %s or not enough data\n",wide_csv); return; }
+  int N=X.GetNrows(), P=X.GetNcols();
+  TDecompSVD svd(X); if(!svd.Decompose()){ printf("[ERR] SVD failed\n"); return; }
+  TMatrixD V=svd.GetV(); TVectorD S=svd.GetSig(); double vare=0; int K=std::min(P,N);
+  for(int j=0;j<K;++j) vare+=S(j)*S(j);
+  double var1=(K>0)?S(0)*S(0):0, var2=(K>1)?S(1)*S(1):0;
+  double ev1=(vare>0)?100.0*var1/vare:0, ev2=(vare>0)?100.0*var2/vare:0;
 
-  int R = (int)X.size(), C=(int)useIdx.size();
-  TPrincipal pca(C,"ND"); // normalize & demean
-  std::vector<double> row(C);
-  for (int i=0;i<R;++i){
-    bool ok=true;
-    for (int j=0;j<C;++j){
-      double v = X[i][useIdx[j]];
-      if (!std::isfinite(v)) { ok=false; break; }
-      row[j]=v;
-    }
-    if (ok) pca.AddRow(row.data());
-  }
-  pca.MakePrincipals();
+  TMatrixD scores(N,2);
+  for(int i=0;i<N;++i) for(int k=0;k<2;++k){ double s=0; for(int j=0;j<P;++j) s+=X(i,j)*V(j,k); scores(i,k)=s; }
 
-  // Project each row (skip NaNs rows)
-  std::vector<double> xs, ys; xs.reserve(R); ys.reserve(R);
-  std::vector<int> rr; rr.reserve(R);
-  for (int i=0;i<R;++i){
-    bool ok=true;
-    for (int j=0;j<C;++j) if (!std::isfinite(X[i][useIdx[j]])) { ok=false; break; }
-    if (!ok) continue;
-    TVectorD v(C);
-    for (int j=0;j<C;++j) v[j]=X[i][useIdx[j]];
-    TVectorD y = pca.Evaluate(v);
-    xs.push_back(y[0]); ys.push_back(y[1]); rr.push_back(runs[i]);
-  }
-
-  // plot scatter
-  auto gr = new TGraph(xs.size());
-  for (size_t i=0;i<xs.size();++i) gr->SetPoint(i,xs[i],ys[i]);
-  double var1 = pca.GetEigenValues()[0];
-  double var2 = pca.GetEigenValues()[1];
-  double vare = 0; for (int j=0;j<C;++j) vare += pca.GetEigenValues()[j];
-
-  TCanvas c("c_pca","PCA QA map",900,700);
-  gr->SetTitle(Form("PCA of QA metrics;PC1 (%.1f%%);PC2 (%.1f%%)", 100*var1/vare, 100*var2/vare));
-  gr->Draw("AP");
-  gSystem->mkdir("out", true);
-  c.SaveAs("out/qa_pca_pc12.pdf");
-  c.SaveAs("out/qa_pca_pc12.png");
-
-  std::cout<<"[DONE] PCA map saved. PC1 explains "<<100*var1/vare<<"%.\n";
+  auto c=new TCanvas("c_pca","PC1 vs PC2",1000,800); auto g=new TGraph(N);
+  for(int i=0;i<N;++i) g->SetPoint(i,scores(i,0),scores(i,1));
+  g->SetTitle(Form("PCA on %d metrics (N=%d);PC1 (%.1f%%);PC2 (%.1f%%)",P,N,ev1,ev2));
+  g->SetMarkerStyle(20); g->Draw("AP");
+  auto txt=new TText(); txt->SetTextSize(0.02);
+  for(int i=0;i<N;++i) if(i<3 || i>=N-3) txt->DrawText(scores(i,0),scores(i,1),Form("%d",runs[i]));
+  c->Print("out/qa_pca_pc12.png"); c->Print("out/qa_pca_pc12.pdf");
+  printf("[DONE] PCA written to out/qa_pca_pc12.(png|pdf)\n");
 }
