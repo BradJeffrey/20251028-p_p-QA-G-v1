@@ -1,1 +1,3 @@
-run,value,stat_err,entries,neighbors_median,neighbors_mad,z_local,is_outlier_weak,is_outlier_strong
+version https://git-lfs.github.com/spec/v1
+oid sha256:907139ae5dbe0cd6c85957e57234e12097a5939cd3e2f2720dc3317d0d73b609
+size 100

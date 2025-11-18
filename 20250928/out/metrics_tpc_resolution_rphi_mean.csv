@@ -1,12 +1,3 @@
-run,segment,file,value,error,weight
-66522,-1,data/run66522.root,0.0149379,0,3
-66684,-1,data/run66684.root,0.0153128,0,3
-66685,-1,data/run66685.root,0.0152815,0,3
-68522,-1,data/run68522.root,0.017736,0,3
-68523,-1,data/run68523.root,0.0176763,0,3
-68548,-1,data/run68548.root,0.0177655,0,3
-68550,-1,data/run68550.root,0.0177792,0,3
-68554,-1,data/run68554.root,0.017763,0,3
-68584,-1,data/run68584.root,0.017729,0,3
-68589,-1,data/run68589.root,0.0176742,0,3
-68604,-1,data/run68604.root,0.0178037,0,3
+version https://git-lfs.github.com/spec/v1
+oid sha256:375fa7eea28fa300672a780c41f347462628eb084b747636ba2aa6ae752efc4f
+size 495

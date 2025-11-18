@@ -1,1 +1,3 @@
-metric,N,median,robust_sigma,slope,eslope,pval,cp_run,dBIC
+version https://git-lfs.github.com/spec/v1
+oid sha256:886f82891a51e2f039003f25177b5b31418befb4848181e6f3c07dc2eed9e7fc
+size 59
