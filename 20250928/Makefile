@@ -136,3 +136,19 @@ check-robust:
 
 z-summary:
 	./scripts/summary_outliers.sh
+
+# diagnostics and summary targets
+diagnose:
+	@echo "[Makefile] Running diagnostics for physics quality..."
+	root -l -b -q 'macros/diagnose_runs.C()'
+
+summary-docs:
+	@echo "[Makefile] Building per-run summary markdown..."
+	root -l -b -q 'macros/build_summary_docs.C()'
+
+metrics-doc:
+	@echo "[Makefile] Generating metrics documentation..."
+	root -l -b -q 'macros/generate_metrics_doc.C()'
+
+full-diagnose: diagnose summary-docs metrics-doc
+
