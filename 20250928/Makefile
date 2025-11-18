@@ -57,7 +57,7 @@ derived:
 segmentcv:
 	@mkdir -p out
 	-$(ROOTCMD) 'macros/segment_consistency.C("cluster_size_intt_mean")'
-	-$(ROOTCMD) 'macros/segment_consistency.C("intt_adc_peak")'
+	-$(ROOTCMD) 'macros/segment_cosisntency.C("intt_admaxbinak")'
 
 intthealth:
 	@mkdir -p out
