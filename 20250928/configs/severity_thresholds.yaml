@@ -1,0 +1,4 @@
+global:
+  mild: 1.0
+  moderate: 2.0
+  severe: 3.0

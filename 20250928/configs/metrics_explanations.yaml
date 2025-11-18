@@ -1,0 +1,10 @@
+intt_adc_peak:
+  formula: argmax_x ADC(x)
+  patterns: "Slow drift\u2192aging/temperature; step change\u2192calibration or hardware swap."
+  physics: Peak ADC location tracks gain; shifts indicate gain drift or calibration shifts.
+  why: Stability across run number implies consistent amplification; jumps/drifts are red flags.
+intt_bco_peak:
+  formula: argmax_b BCO(b)
+  patterns: "Alternating offsets\u2192phase toggling; monotone drift\u2192clock drift."
+  physics: Aligns timing to bunch crossing; shifts suggest clock/phase issues.
+  why: Run-dependent offsets reveal timing misalignment.
