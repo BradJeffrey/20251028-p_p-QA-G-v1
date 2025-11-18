@@ -186,13 +186,18 @@ void extract_metrics_v2(const char* listspath="lists/files.txt", const char* con
         else if (m=="median")           value = h_quantile(h, 0.50);
         else if (m=="p90")              value = h_quantile(h, 0.90);
         else if (m=="ks_uniform_p")     value = h_ks_uniform_p(h);
+ else if (m=="mean") { value = h->GetMean(); error = h->GetMeanError(); }
+            else if (m=="rms")  { value = h->GetRMS();  error = h->GetRMSError(); }
+
         else if (m=="chi2_uniform_red") value = h_chi2_uniform_red(h);
         else {
           std::cerr << "[INFO] unknown method '" << m << "' for metric " << d.metric << " — writing NaN/0 row\n";
           value = std::numeric_limits<double>::quiet_NaN();
           weight = (h ? h->GetEntries() : 0.0);
         }
-        std::cout << "[INFO] " << d.metric << " run=" << run << " seg=" << seg
+        std::cout << "[INFO] " << d.metric << "
+else if (m=="mean") { value = h->GetMean(); error = h->GetMeanError(); }
+        else if (m=="rms")  { value = h->GetRMS();  error = h->GetRMSError(); } run=" << run << " seg=" << seg
                   << " value=" << (std::isfinite(value)?std::to_string(value):"NaN")
                   << " w=" << weight << "\n";
       } else {
