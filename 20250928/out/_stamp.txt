@@ -1,6 +1,6 @@
-date=20251021_154002_run66522-66522
+date=20251118_001634
 run_min=66522
-run_max=66522
+run_max=68604
 list=lists/files.txt
 conf=metrics.conf
-weighting=ivar
+weighting=entries
