@@ -55,8 +55,8 @@ void correlate_metrics(const char* m1="intt_nhit_mean", const char* m2="mvtx_nhi
 
   // Pearson R
   double mx=0,my=0; for (size_t i=0;i<xs.size();++i){ mx+=xs[i]; my+=ys[i]; }
-  mx/=xs.size(); my/=xs.size();
-  double sx=0, sy=0, sxy=0;
+     mx/=xs.size(); my/=ys.size();
+
   for (size_t i=0;i<xs.size();++i){ double dx=xs[i]-mx, dy=ys[i]-my; sx+=dx*dx; sy+=dy*dy; sxy+=dx*dy; }
   double R = sxy/std::sqrt(sx*sy);
   std::ofstream out("out/corr_summary.txt", std::ios::app);
