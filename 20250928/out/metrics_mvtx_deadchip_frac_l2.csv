@@ -1,0 +1,14 @@
+run,segment,file,value,error,weight
+66522,-1,data/run66522.root,0,0,1.92841e+08
+66684,-1,data/run66684.root,0,0,5.75557e+09
+66685,-1,data/run66685.root,0,0,1.25555e+10
+68520,-1,data/run68520.root,nan,0,0
+68522,-1,data/run68522.root,0,0,2.28859e+10
+68523,-1,data/run68523.root,0,0,1.48107e+10
+68531,-1,data/run68531.root,nan,0,0
+68548,-1,data/run68548.root,0,0,1.68038e+09
+68550,-1,data/run68550.root,0,0,6.73586e+09
+68554,-1,data/run68554.root,0,0,2.2655e+10
+68584,-1,data/run68584.root,0,0,2.1886e+10
+68589,-1,data/run68589.root,0,0,2.01637e+10
+68604,-1,data/run68604.root,0,0,1.25465e+10
