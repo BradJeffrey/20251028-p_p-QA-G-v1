@@ -1,0 +1,126 @@
+# 🧭 User Pre‑Launch Instructions — Real Data Edition — **UPDATED**
+
+Follow these steps before launching a new Agent Mode session. This version reflects the **new metrics**,
+recommended **entries‑weighted aggregation**, and a few copy‑paste tips to avoid zsh issues.
+
+---
+
+## 1) Validate Local Environment
+
+**ROOT:**
+```bash
+root -l -b -q
+```
+Expect ROOT 6.36.00 to start and exit cleanly.
+
+**Git & SSH:**
+```bash
+git --version
+ssh -T git@github.com
+```
+Should confirm you’re authenticated as `BradJeffrey`. If not, re‑create SSH keys and add the public key to GitHub.
+
+**Git LFS (installed & skipping large file smudge):**
+```bash
+brew install git-lfs     # if not installed
+git lfs install
+export GIT_LFS_SKIP_SMUDGE=1
+```
+
+---
+
+## 2) Repo Preparation
+
+```bash
+git clone git@github.com:BradJeffrey/20251028-p_p-QA-G-v1.git
+cd 20251028-p_p-QA-G-v1
+git checkout results/intt-metrics
+```
+
+Place your real DST ROOT files under:
+```
+20251028-p_p-QA-G-v1/20250928/data/
+```
+
+Update the file list:
+```bash
+cd 20250928
+printf '%s\n' "data/DST_CALOR-00053744-0000.root" > lists/files.txt
+```
+
+---
+
+## 3) Update Metrics Configuration (already done, check for duplicates)
+
+Ensure these lines are present **once** in `metrics.conf` (remove duplicates if you appended them multiple times):
+```
+cluster_size_intt_mean, h_InttClusterQA_clusterSize, mean
+cluster_phi_intt_rms,  h_InttClusterQA_clusterPhi_incl, rms
+intt_hits_asym,        h_InttRawHitQA_sensorOccupancy, asym
+```
+
+---
+
+## 4) Run the Pipeline (entries weighting)
+
+From inside `20250928/`:
+```bash
+root -l -b -q 'macros/extract_quick.C("lists/files.txt")'
+root -l -b -q 'macros/aggregate_per_run_v2.C("metrics.conf","entries")'
+root -l -b -q 'macros/plot_dashboard.C()'
+```
+
+Artifacts expected in `out/`:
+- `metrics_*_perrun.csv` and `metric_*_perrun.{pdf,png}` for all configured metrics
+- `metrics_cluster_size_intt_mean*.csv` and plots
+- `metrics_cluster_phi_intt_rms*.csv` and plots
+- `metrics_intt_hits_asym*.csv` and plots
+- `dashboard_intt_2x2.{pdf,png}`
+
+> Note: Some runs may produce zero‑range axes (especially for `intt_hits_asym`). The plots will still be generated.
+
+---
+
+## 5) Commit & Push (as needed)
+
+```bash
+cd ~/20251028-p_p-QA-G-v1
+git add 20250928/macros/extract_quick.C         20250928/metrics.conf         20250928/out/*
+git commit -m "Update metrics, regenerate per-run outputs (entries weighting)"
+git push origin results/intt-metrics
+```
+
+---
+
+## 6) (Planned) CI Smoke Test
+
+When ready, add a workflow `.github/workflows/qa-smoke.yml` using the ROOT 6.36 container to run
+the pipeline and upload `20250928/out` as an artifact.
+
+---
+
+## 7) Copy‑Paste Tips (to avoid zsh errors)
+
+- If you see `zsh: command not found: #`, it means a comment line was pasted into a context that executed it.
+  Remove or paste comment lines separately.
+- Avoid pasting invisible characters (e.g., from formatted docs). Prefer code blocks in plain‑text terminals.
+- Run long pipelines line‑by‑line if the terminal truncates or rewrites pasted text.
+
+---
+
+## 8) Launch the Next Agent Session
+
+1) Start a new ChatGPT conversation.  
+2) Paste the entire updated handoff file: `handoff_for_new_agent_UPDATED.txt`.  
+3) Provide access to your repo and the `20250928` subdir; the Agent will continue with extractor parity, aggregator hardening, and CI.
+
+---
+## Addendum — Quick Pre-Launch Reminders (2025-11-06 10:20 UTC)
+
+- Branch: work on `results/intt-metrics` unless instructed otherwise.
+- One-shot run & publish: `make full-push` from repo root.
+- Run QA only: `make run-qa` then `make nan-check` to append NaN diagnostics to the latest changelog, finally `make update-latest`.
+- Where outputs land: `20250928/out/` (CSVs and plots) and `20250928/docs/` (dated changelogs + `CHANGELOG_LATEST.md`).
+- ROOT warnings: `no StreamerInfo found` (6.32.06 -> 6.36.00) are expected and safe. Axis `wmin==wmax` on `intt_hits_asym` occurs when metrics are flat; investigate or add plotting epsilon if recurring.
+- Rollback path: restore Makefile from `20250928/docs/Makefile_PRODUCTION_20251106` if edits go awry.
+

@@ -1,1 +1,13 @@
-/Users/brad/Desktop/RootTasks/Taks1V1001/Task1V1004/Project_20250928Start/20250928/run66522.root
+data/run66522.root
+data/run66684.root
+data/run66685.root
+data/run68520.root
+data/run68522.root
+data/run68523.root
+data/run68531.root
+data/run68548.root
+data/run68550.root
+data/run68554.root
+data/run68584.root
+data/run68589.root
+data/run68604.root

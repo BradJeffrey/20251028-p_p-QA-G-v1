@@ -1,0 +1,1 @@
+cxx17 asimage asimage_tiff builtin_clang builtin_cling builtin_freetype builtin_llvm builtin_openui5 builtin_vdt clad cocoa dataframe davix fftw3 fitsio fortran gdml geom gnuinstall http imt libcxx mathmore mysql opengl pyroot roofit root7 rpath runtime_cxxmodules shared spectrum sqlite ssl tmva tmva-cpu tmva-cudnn tmva-pymva tpython use_gsl_cblas vdt webgui xml xrootd

@@ -1,0 +1,218 @@
+# 🔧 Agent Handoff — sPHENIX QA Pipeline (ROOT, Real Data Edition) — **UPDATED**
+
+This document replaces the previous handoff and should be pasted into a **fresh ChatGPT conversation in Agent Mode**.
+It captures the current state **after the latest session**, including new metrics, macro changes, and verified outputs.
+
+---
+
+## 1) Project Overview (High‑Level Intent)
+
+We are building a **reproducible QA pipeline** in ROOT for sPHENIX real data.  
+Given a list of ROOT files, the pipeline extracts detector metrics, writes **per‑metric CSVs**, aggregates
+across runs, and produces dashboards. It must be robust to missing histograms (write `NaN, weight=0`) and
+support multiple weighting schemes in aggregation.
+
+**Primary repo:** `BradJeffrey/20251028-p_p-QA-G-v1`, primary working subdir: `20250928/`.  
+**Current branch:** `results/intt-metrics` (contains latest outputs and macro changes).
+
+---
+
+## 2) Current Status (What’s Working / What’s New)
+
+### ✅ Working
+- **Metric extraction** using `macros/extract_quick.C` on real ROOT files (handles absolute/relative paths).
+- **New metrics added & populated:**  
+  - `cluster_size_intt_mean` from `h_InttClusterQA_clusterSize` (mean)  
+  - `cluster_phi_intt_rms` from `h_InttClusterQA_clusterPhi_incl` (RMS)  
+  - `intt_hits_asym` from `h_InttRawHitQA_sensorOccupancy` (max–min)/(max+min) over occupancy bins
+- **Aggregation** via `macros/aggregate_per_run_v2.C` using **entries** weighting (avoids IVAR division‑by‑zero cases).  
+  Per‑run CSVs and plots are produced for all configured metrics.
+- **Dashboard** via `macros/plot_dashboard.C` renders successfully and falls back to per‑file data when per‑run
+  CSVs are missing.
+
+### ⚠️ Notes / Minor Warnings
+- Some metrics (notably `intt_hits_asym`) can yield a **zero data range** for certain runs; ROOT will emit
+  `TGaxis::PaintAxis` *wmin==wmax* warnings, but PDFs/PNGs are still produced.
+- `extract_metrics_v2.C` (config‑driven extractor) still needs to be brought to parity with `extract_quick.C`.
+- Aggregator could further harden its binning and axis‑range logic to suppress zero‑range warnings gracefully.
+
+### 📁 New/Updated Outputs Confirmed
+Created (and pushed) under `20250928/out/`:
+- **Per‑run plots:**  
+  `metric_cluster_size_intt_mean_perrun.{pdf,png}`  
+  `metric_cluster_phi_intt_rms_perrun.{pdf,png}`  
+  `metric_intt_hits_asym_perrun.{pdf,png}`  
+  plus existing `metric_intt_*_perrun.{pdf,png}`
+- **Per‑metric CSVs:**  
+  `metrics_cluster_size_intt_mean.csv` + `_perrun.csv`  
+  `metrics_cluster_phi_intt_rms.csv` + `_perrun.csv`  
+  `metrics_intt_hits_asym.csv` + `_perrun.csv`  
+  plus existing `metrics_intt_*.csv` and `_perrun.csv`
+- **Dashboard:** `dashboard_intt_2x2.{pdf,png}` (regenerated)
+- **Config:** `metrics.conf` updated with the three new metric lines.
+
+---
+
+## 3) Session Updates (Summary of This Session)
+
+- **Extended `extract_quick.C`** to read new histograms and compute:
+  - mean cluster size, RMS of inclusive cluster phi, and occupancy‑based hit asymmetry.
+- **Updated `metrics.conf`** to include entries for the three new metrics.
+- **Regenerated per‑run metrics** with `aggregate_per_run_v2.C` using **entries weighting** (instead of IVAR).  
+- **Regenerated dashboard** and verified artifacts.  
+- **Committed & pushed** all changes (macros, CSVs, plots, config) to `results/intt-metrics`.
+
+---
+
+## 4) Current Active Goals (Progress Breakdown)
+
+- **G1 — Config‑driven extractor (`extract_metrics_v2.C`) at parity**  
+  *Status:* In progress. Needs to replicate the logic and guardrails of `extract_quick.C` and emit one row per (file, metric).
+
+- **G2 — Robust aggregation & axis handling**  
+  *Status:* Partially complete. Entries weighting enabled. Add guards to avoid zero‑range axes (e.g., force a small epsilon
+  or fixed y‑range when min==max; write explicit NaN rows when a histogram is empty).
+
+- **G3 — CI smoke workflow on real data**  
+  *Status:* Planned. Add a minimal GitHub Actions workflow that runs extractor → aggregator → dashboard inside the ROOT
+  container image and uploads `out/` as an artifact.
+
+- **G4 — Documentation & REPORT.md**  
+  *Status:* Planned. Produce a metrics coverage & quality report from the CSVs, noting NaN rates and outliers.
+
+---
+
+## 5) Future Goals (Specific + Abstract)
+
+### Specific (ordered)
+1. **Finish `extract_metrics_v2.C` parity** with the new metrics (size mean, phi RMS, hits asym).  
+2. **Harden `aggregate_per_run_v2.C`**: handle zero‑range axes; ensure per‑run plots always set sensible y‑ranges.  
+3. **Add `qa-smoke` CI**: run on push to `results/**` and upload `20250928/out`.  
+4. **Generate `out/REPORT.md`** with summary stats per metric (finite counts, NaN %, mean±std).  
+5. **Deduplicate `metrics.conf`** if any duplicate lines were appended during iterative updates.
+
+### Abstract
+- Expand metric list to other INTT histograms and, later, other detectors.  
+- Unify configuration semantics (aliases like `median_p50`/`p50`, `peak`/`maxbin`, etc.).  
+- Improve failure transparency: structured logs with per‑file per‑metric reasons for NaN or missing histograms.
+
+---
+
+## 6) Technical Details (Macros, Data, and CI)
+
+### Macros
+- **`macros/extract_quick.C` (UPDATED):**  
+  Reads: `h_InttClusterQA_clusterSize`, `h_InttClusterQA_clusterPhi_incl`, `h_InttRawHitQA_sensorOccupancy` in addition to
+  existing INTT histograms. Computes mean, RMS, and occupancy asymmetry; writes NaN with weight 0 if missing.
+
+  *Hit asymmetry sketch used:*
+  ```cpp
+  // For TH1* hocc
+  double max_val = 0, min_val = 0; bool first_bin = true;
+  for (int bi = 1; bi <= hocc->GetNbinsX(); ++bi) {
+    double content = hocc->GetBinContent(bi);
+    if (first_bin) { max_val = min_val = content; first_bin = false; }
+    else { if (content > max_val) max_val = content; if (content < min_val) min_val = content; }
+  }
+  double asym = TMath::QuietNaN();
+  if (max_val + min_val > 0) asym = (max_val - min_val) / (max_val + min_val);
+  // write: run,segment,file,asym,0,entries
+  ```
+
+- **`macros/aggregate_per_run_v2.C` (USAGE):**
+  ```bash
+  root -l -b -q 'macros/aggregate_per_run_v2.C("metrics.conf","entries")'
+  ```
+  Produces per‑run CSVs and `metric_*_perrun.{pdf,png}` plots. Entries weighting is now recommended.
+
+- **`macros/plot_dashboard.C` (USAGE):**
+  ```bash
+  root -l -b -q 'macros/plot_dashboard.C()'
+  ```
+  Uses per‑run CSVs where present; falls back to per‑file.
+
+### Configuration
+`20250928/metrics.conf` now includes (appended):  
+```
+cluster_size_intt_mean, h_InttClusterQA_clusterSize, mean
+cluster_phi_intt_rms,  h_InttClusterQA_clusterPhi_incl, rms
+intt_hits_asym,        h_InttRawHitQA_sensorOccupancy, asym
+```
+Plus the existing INTT metrics (adc/bco/phi).
+
+### Data & Lists
+- Real data files are referenced via `lists/files.txt` (relative paths inside `20250928/`).
+
+### CI (Planned)
+Create `.github/workflows/qa-smoke.yml` using the ROOT 6.36 container to run extractor→aggregator→dashboard and upload `out/`.
+
+---
+
+## 7) Definition of Done
+
+- `extract_metrics_v2.C` produces all per‑metric CSVs (including the three new metrics) with correct NaN/weight semantics.  
+- Aggregation produces per‑run CSVs and plots **without zero‑range axis errors** (guarded y‑ranges or epsilon).  
+- `dashboard_intt_2x2` renders cleanly using per‑run CSVs.  
+- CI smoke test passes and uploads artifacts.  
+- `out/REPORT.md` summarizes coverage and basic statistics.
+
+---
+
+## 8) Next Steps for the Next Assistant
+
+1) **Sync & verify** (branch `results/intt-metrics`): ensure all new outputs are present under `20250928/out/`.  
+2) **Bring `extract_metrics_v2.C` to parity**: port the three new metrics and the NaN/weight guard rules.  
+3) **Harden aggregator plotting**: add safe y‑range defaults when min==max; suppress TGaxis warnings.  
+4) **Add `qa-smoke` workflow** and confirm it runs in the ROOT container.  
+5) **Generate `out/REPORT.md`** from the CSVs; include NaN rates and sample run plots.  
+6) **Open a PR** with these changes against `results/intt-metrics` and request review.
+
+---
+
+### Reference
+- Repo structure, baseline goals, and the CI plan mirror the prior handoff; this file is the authoritative update.
+
+---
+## Addendum — QA Automation & NaN Tracking (2025-11-06 10:20 UTC)
+
+This session implemented automated quality gates and new INTT metrics in the real-data pipeline.
+
+### What changed (incremental to earlier UPDATED file)
+- New metrics extracted in `extract_quick.C`:
+  - `cluster_size_intt_mean` from `h_InttClusterQA_clusterSize` (mean)
+  - `cluster_phi_intt_rms` from `h_InttClusterQA_clusterPhi_incl` (RMS)
+  - `intt_hits_asym` from `h_InttRawHitQA_sensorOccupancy` using asymmetry formula `(max-min)/(max+min)`; falls back to `nan` if denominator is 0.
+- `metrics.conf` expanded to include the three metrics above.
+- Aggregation now uses `entries` weighting via `aggregate_per_run_v2.C("metrics.conf","entries")` to avoid inverse-variance divide-by-zero.
+- Artifacts produced (examples):
+  - CSVs: `metrics_cluster_size_intt_mean.csv`, `metrics_cluster_size_intt_mean_perrun.csv`, `metrics_cluster_phi_intt_rms.csv`, `metrics_cluster_phi_intt_rms_perrun.csv`, `metrics_intt_hits_asym.csv`, `metrics_intt_hits_asym_perrun.csv`.
+  - Plots: `metric_cluster_size_intt_mean_perrun.(png|pdf)`, `metric_cluster_phi_intt_rms_perrun.(png|pdf)`, `metric_intt_hits_asym_perrun.(png|pdf)`.
+  - Dashboard refreshed: `out/dashboard_intt_2x2.(png|pdf)`.
+- Automation (Makefile targets)
+  - `run-qa` -> run extract -> aggregate -> plot.
+  - `generate-changelog` -> stamp a dated changelog under `20250928/docs/` listing produced files and last commit.
+  - `nan-check` -> scan `out/metrics_*.csv` for NaN (case-insensitive), compute total NaN entries, and append details (timestamp + affected files) to the latest changelog.
+  - `update-latest` -> copy newest `CHANGELOG_REALDATA_*.md` to `CHANGELOG_LATEST.md`.
+  - `full-push` -> `run-qa` + `generate-changelog` + `nan-check` + `update-latest` and stage/push outputs.
+- Production pin: the current Makefile was pinned at `20250928/docs/Makefile_PRODUCTION_20251106` (commit `cedebb2`).
+
+### Notes
+- You may still see ROOT warnings like `Error in <TGaxis::PaintAxis>: wmin == wmax` for `intt_hits_asym` when all values are constant; plots are still emitted. Consider plotting with a small epsilon range if needed.
+- Reading data produced with ROOT `6.32.06` under `6.36.00` logs `no StreamerInfo found` warnings but files were recovered and processed; benign for this workflow.
+
+### How to run end-to-end
+```bash
+# From repo root
+make full-push
+# or run pieces:
+make run-qa
+make nan-check
+make update-latest
+```
+
+### Next immediate steps for the Agent
+1. Investigate NaNs: use `grep -il "nan" 20250928/out/metrics_*.csv` to list affected files and confirm what the changelog recorded.
+2. Guard zero-range plots: in `aggregate_per_run_v2.C` and/or plotting macros, clamp axis ranges when `min==max` to suppress TGaxis warnings.
+3. Stabilize Makefile: ensure each target has a single definition; if duplicate append attempts happen again, re-write the file from the pinned production version.
+4. Extend metrics (optional): add layer-specific phi uniformity or ADC tails if needed for physics acceptance.
+

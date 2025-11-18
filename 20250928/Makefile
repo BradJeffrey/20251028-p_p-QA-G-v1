@@ -6,14 +6,15 @@ MARKERS     ?= config/markers.csv
 THRESH      ?= config/thresholds.csv
 WEIGHTING   ?= ivar                       # ivar | entries | mean
 WIDE        ?= out/metrics_perrun_wide.csv
+ROBUST_W    ?= 5
 
 # core vs full bundles
-CORE_STEPS  = extract physqa aggregate merge analyze stamp
+CORE_STEPS  = extract physqa aggregate robust merge analyze stamp
 FULL_STEPS  = $(CORE_STEPS) derived segmentcv intthealth control pca report
 
 DATE_TAG    := $(shell date +"%Y%m%d_%H%M%S")
 
-.PHONY: all core full extract physqa aggregate merge analyze derived segmentcv intthealth control pca report stamp check list_runs clean clobber
+.PHONY: all core full extract physqa aggregate robust merge analyze derived segmentcv intthealth control pca report stamp check list_runs clean clobber
 
 all: full
 core: $(CORE_STEPS)
@@ -31,6 +32,10 @@ physqa:
 aggregate:
 	@mkdir -p out
 	$(ROOTCMD) 'macros/aggregate_per_run_v2.C("$(CONF)","$(WEIGHTING)")'
+
+robust:
+	@echo "[Makefile] Running robust z (W=$(ROBUST_W))..."
+	$(ROOTCMD) 'macros/add_robust_z.C("$(CONF)",$(ROBUST_W))'
 
 merge:
 	@mkdir -p out
@@ -104,3 +109,30 @@ clean:
 
 clobber: clean
 	@rm -f out/metrics_*.csv out/_stamp.txt out/metrics_perrun_wide.csv out/consistency_summary.csv
+# ---------- QA extensions ----------
+ROBUST_W ?= 5
+
+robust:
+	@echo "[Makefile] Running robust z (W=$(ROBUST_W))..."
+	root -l -b -q 'macros/add_robust_z.C("metrics.conf",$(ROBUST_W))'
+
+robust-aliases:
+	@echo "[Makefile] Copy metrics_* -> metric_* per-run CSV aliases"
+	@for f in out/metrics_*_perrun.csv; do \
+	  dest=$${f/out\/metrics_/out\/metric_}; \
+	  cp -f "$$f" "$$dest"; \
+	done
+
+run-qa:
+	@echo "[Makefile] extract → aggregate → robust → alias → dashboard"
+	root -l -b -q 'macros/extract_quick.C("lists/files.txt")'
+	root -l -b -q 'macros/aggregate_per_run_v2.C("metrics.conf","entries")'
+	$(MAKE) robust ROBUST_W=$(ROBUST_W)
+	$(MAKE) robust-aliases
+	root -l -b -q 'macros/plot_dashboard.C()'
+
+check-robust:
+	./scripts/validate_perrun_schema.sh
+
+z-summary:
+	./scripts/summary_outliers.sh

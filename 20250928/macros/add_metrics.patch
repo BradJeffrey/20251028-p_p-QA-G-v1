@@ -1,0 +1,77 @@
+*** Begin Patch
+*** Update File: 20250928/macros/extract_quick.C
+@@ void extract_quick(const char* list="lists/files.txt") {
+-    std::ofstream csv_bco_peak("out/metrics_intt_bco_peak.csv");
++    std::ofstream csv_bco_peak("out/metrics_intt_bco_peak.csv");
++    // New CSVs for cluster size mean, cluster phi RMS, and hit asymmetry
++    std::ofstream csv_cluster_size_mean("out/metrics_cluster_size_intt_mean.csv");
++    std::ofstream csv_cluster_phi_rms("out/metrics_cluster_phi_intt_rms.csv");
++    std::ofstream csv_hits_asym("out/metrics_intt_hits_asym.csv");
+@@ void extract_quick(const char* list="lists/files.txt") {
+     auto write_header = [](std::ofstream& f){ f << "run,segment,file,value,error,weight\n"; };
+     write_header(csv_adc_peak);
+     write_header(csv_adc_med);
+     write_header(csv_adc_p90);
+     write_header(csv_phi_ks);
+     write_header(csv_phi_chi);
+     write_header(csv_bco_peak);
++    // write headers for new metrics
++    write_header(csv_cluster_size_mean);
++    write_header(csv_cluster_phi_rms);
++    write_header(csv_hits_asym);
+@@ while(std::getline(in, fpath)) {
+-    TH1* hadc = (TH1*)f.Get("h_InttRawHitQA_adc");
+-    TH1* hphi = (TH1*)f.Get("h_InttClusterQA_clusterPhi_incl");
+-    TH1* hbco = (TH1*)f.Get("h_InttRawHitQA_bco");
++    TH1* hadc = (TH1*)f.Get("h_InttRawHitQA_adc");
++    TH1* hphi = (TH1*)f.Get("h_InttClusterQA_clusterPhi_incl");
++    TH1* hbco = (TH1*)f.Get("h_InttRawHitQA_bco");
++    // Additional histograms for new metrics
++    TH1* hsize = (TH1*)f.Get("h_InttClusterQA_clusterSize");
++    TH1* hocc = (TH1*)f.Get("h_InttRawHitQA_sensorOccupancy");
+@@ while(std::getline(in, fpath)) {
+     // bco peak
+     if(hbco && hbco->GetEntries()>0) {
+         int ib = hbco->GetMaximumBin();
+         double x = hbco->GetXaxis()->GetBinCenter(ib);
+         csv_bco_peak << run << "," << seg << "," << fpath << "," << x << ",0," << hbco->GetEntries() << "\n";
+     } else {
+         csv_bco_peak << run << "," << seg << "," << fpath << ",nan,0,0\n";
+     }
++    // cluster size mean
++    if(hsize && hsize->GetEntries()>0) {
++        double mean_val = hsize->GetMean();
++        csv_cluster_size_mean << run << "," << seg << "," << fpath << "," << mean_val << ",0," << hsize->GetEntries() << "\n";
++    } else {
++        csv_cluster_size_mean << run << "," << seg << "," << fpath << ",nan,0,0\n";
++    }
++    // cluster phi RMS
++    if(hphi && hphi->GetEntries()>0) {
++        double rms_val = hphi->GetRMS();
++        csv_cluster_phi_rms << run << "," << seg << "," << fpath << "," << rms_val << ",0," << hphi->GetEntries() << "\n";
++    } else {
++        csv_cluster_phi_rms << run << "," << seg << "," << fpath << ",nan,0,0\n";
++    }
++    // hits asymmetry: compute simple asymmetry as (max-min)/(max+min)
++    if(hocc && hocc->GetEntries()>0) {
++        double max_val = 0.0;
++        double min_val = 0.0;
++        bool first_bin = true;
++        int nbins = hocc->GetNbinsX();
++        for(int bi=1; bi<=nbins; ++bi){
++            double content = hocc->GetBinContent(bi);
++            if(first_bin) { max_val = min_val = content; first_bin=false; }
++            else {
++                if(content > max_val) max_val = content;
++                if(content < min_val) min_val = content;
++            }
++        }
++        double asym = TMath::QuietNaN();
++        if(max_val + min_val > 0) {
++            asym = (max_val - min_val)/(max_val + min_val);
++        }
++        csv_hits_asym << run << "," << seg << "," << fpath << "," << asym << ",0," << hocc->GetEntries() << "\n";
++    } else {
++        csv_hits_asym << run << "," << seg << "," << fpath << ",nan,0,0\n";
++    }
+*** End Patch

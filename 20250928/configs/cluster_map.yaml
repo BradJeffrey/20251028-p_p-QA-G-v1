@@ -1,0 +1,40 @@
+clusters:
+  asymmetry:
+    indicators:
+    - asymmetry
+    label: Asymmetry
+    metrics:
+    - intt_hits_asym
+  cluster_regime:
+    indicators:
+    - cluster_regime
+    label: Cluster regime
+    metrics:
+    - cluster_size_intt_mean
+  gain_adc:
+    indicators:
+    - gain_stability
+    label: Gain / ADC stability
+    metrics:
+    - intt_adc_peak
+    - intt_adc_p90
+    - intt_adc_median_p50
+  phi_spread:
+    indicators:
+    - phi_spread
+    label: "\u03A6 spread"
+    metrics:
+    - cluster_phi_intt_rms
+  phi_uniform:
+    indicators:
+    - phi_uniformity
+    label: "\u03A6 uniformity / channel balance"
+    metrics:
+    - intt_phi_uniform_r1
+    - intt_phi_chi2_reduced
+  timing:
+    indicators:
+    - timing_alignment
+    label: Timing alignment / clock
+    metrics:
+    - intt_bco_peak

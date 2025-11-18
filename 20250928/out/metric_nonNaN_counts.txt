@@ -1,0 +1,7 @@
+     138
+metrics_intt_adc_median_p50.csv:       17 finite values
+metrics_intt_adc_p90.csv:       17 finite values
+metrics_intt_adc_peak.csv:       17 finite values
+metrics_intt_bco_peak.csv:       17 finite values
+metrics_intt_phi_chi2_reduced.csv:       35 finite values
+metrics_intt_phi_uniform_r1.csv:       35 finite values
