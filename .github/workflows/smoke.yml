@@ -1,0 +1,49 @@
+name: Smoke Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 20250928
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Conda with ROOT
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          environment-file: .binder/environment.yml
+          activate-environment: root-env
+          auto-activate-base: false
+
+      - name: Verify ROOT installation
+        shell: bash -el {0}
+        run: root -l -b -q -e 'std::cout << "ROOT " << gROOT->GetVersion() << std::endl;'
+
+      - name: Generate mock data
+        shell: bash -el {0}
+        run: root -l -b -q 'macros/make_mock_inputs.C("data/","lists/mock_files.txt",5)'
+
+      - name: Run full pipeline on mock data
+        shell: bash -el {0}
+        run: make full LIST=lists/mock_files.txt WEIGHTING=entries
+
+      - name: Run smoke test
+        shell: bash -el {0}
+        run: ./scripts/smoke_test.sh metrics.conf
+
+      - name: Upload outputs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-outputs
+          path: 20250928/out/
+          retention-days: 7

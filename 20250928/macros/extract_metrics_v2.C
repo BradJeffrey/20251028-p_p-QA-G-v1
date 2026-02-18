@@ -165,6 +165,7 @@ void extract_metrics_v2(const char* listspath="lists/files.txt", const char* con
   }
   std::cout << "[INFO] metrics in scope: " << defs.size() << "\n";
   for (auto& d : defs) {
+    if (normalize_method(d.method) == "skip") continue;  // handled by physqa_extract.C
     std::string outcsv = std::string("out/metrics_") + d.metric + ".csv";
     ensure_csv_header(outcsv);
   }
@@ -190,6 +191,7 @@ void extract_metrics_v2(const char* listspath="lists/files.txt", const char* con
     if (!f || f->IsZombie()) {
       std::cerr << "[WARN] cannot open file: " << fpath << " (writing NaN rows)\n";
       for (const auto& d : defs) {
+        if (normalize_method(d.method) == "skip") continue;
         std::string outcsv = std::string("out/metrics_") + d.metric + ".csv";
         append_row(outcsv, run, seg, fpath, std::numeric_limits<double>::quiet_NaN(), 0.0, 0.0);
       }
@@ -204,6 +206,7 @@ void extract_metrics_v2(const char* listspath="lists/files.txt", const char* con
       if (h) {
         weight = h->GetEntries();
         const std::string m = d.method;
+        if (m=="skip") continue;        // handled by physqa_extract.C
         if      (m=="maxbin")           value = h_maxbin_center(h);
         else if (m=="median")           value = h_quantile(h, 0.50);
         else if (m=="p90")              value = h_quantile(h, 0.90);

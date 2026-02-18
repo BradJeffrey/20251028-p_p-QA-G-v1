@@ -65,3 +65,105 @@ per_metric:
     mild: 2.0
     moderate: 3.0
     severe: 5.0
+
+  # --- INTT physics QA metrics ---
+
+  # Landau MPV: very stable, like ADC peak
+  intt_adc_landau_mpv:
+    mild: 1.0
+    moderate: 2.0
+    severe: 3.0
+
+  # BCO R1 modulation: small amplitude expected; increases flag timing issues
+  intt_bco_mod_r1:
+    mild: 2.0
+    moderate: 3.0
+    severe: 5.0
+
+  # Sensor occupancy median: moderate natural variation
+  intt_sensor_occupancy_median:
+    mild: 1.5
+    moderate: 2.5
+    severe: 4.0
+
+  # --- MVTX chip health metrics ---
+
+  # Dead/hot chip fractions: moderate thresholds (small fractions expected)
+  mvtx_deadchip_frac_l0:
+    mild: 1.5
+    moderate: 2.5
+    severe: 4.0
+
+  mvtx_hotchip_frac_l0:
+    mild: 1.5
+    moderate: 2.5
+    severe: 4.0
+
+  mvtx_deadchip_frac_l1:
+    mild: 1.5
+    moderate: 2.5
+    severe: 4.0
+
+  mvtx_hotchip_frac_l1:
+    mild: 1.5
+    moderate: 2.5
+    severe: 4.0
+
+  mvtx_deadchip_frac_l2:
+    mild: 1.5
+    moderate: 2.5
+    severe: 4.0
+
+  mvtx_hotchip_frac_l2:
+    mild: 1.5
+    moderate: 2.5
+    severe: 4.0
+
+  # --- TPC laser timing metrics ---
+
+  # Laser timing: tight thresholds (timing shifts matter)
+  tpc_laser_time_mean_north:
+    mild: 1.5
+    moderate: 2.5
+    severe: 3.5
+
+  tpc_laser_time_mean_south:
+    mild: 1.5
+    moderate: 2.5
+    severe: 3.5
+
+  # N-S delta: very tight (differential timing is precise)
+  tpc_laser_time_delta_NS:
+    mild: 1.5
+    moderate: 2.5
+    severe: 3.5
+
+  # --- TPC shape and resolution metrics ---
+
+  # Ring slope: wide thresholds (depends on gas conditions)
+  tpc_phisize_ring_slope_avg:
+    mild: 2.0
+    moderate: 3.0
+    severe: 5.0
+
+  tpc_zsize_ring_slope_avg:
+    mild: 2.0
+    moderate: 3.0
+    severe: 5.0
+
+  # Resolution: wide thresholds (depends on alignment, gas, drift)
+  tpc_resolution_rphi_mean:
+    mild: 2.0
+    moderate: 3.0
+    severe: 5.0
+
+  tpc_resolution_z_mean:
+    mild: 2.0
+    moderate: 3.0
+    severe: 5.0
+
+  # Sector ADC uniformity: moderate thresholds
+  tpc_sector_adc_uniform_chi2:
+    mild: 1.5
+    moderate: 2.5
+    severe: 4.0

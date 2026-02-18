@@ -4,4 +4,4 @@ channels:
   - defaults
 dependencies:
   - python=3.10
-  - root
+  - root>=6.30,<6.34

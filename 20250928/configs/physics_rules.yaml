@@ -208,3 +208,358 @@ intt_hits_asym:
         - "Short run with insufficient statistics"
       severity: info
       action: "Check if INTT was included in run configuration"
+
+## ====== INTT Physics QA Metrics ======
+
+intt_adc_landau_mpv:
+  detector: INTT
+  observable: Landau MPV of ADC distribution (fit-based gain measurement)
+  expected: "Stable within ~1 ADC count; tracks sensor gain precisely"
+  fit_model: landau
+  anomaly_types:
+    - pattern: gradual_drift
+      causes:
+        - "Temperature-dependent gain drift in silicon sensors"
+        - "Gradual radiation damage reducing charge collection efficiency"
+        - "Power supply voltage drift affecting FPHX amplifier gain"
+      severity: warning
+      action: "Compare with maxbin ADC peak; if both drift, confirms gain issue"
+    - pattern: step_change
+      causes:
+        - "Calibration constant update between runs"
+        - "Sensor module or FPHX chip replacement"
+        - "Threshold reconfiguration in DAQ"
+      severity: warning
+      action: "Check run logbook for hardware or calibration changes"
+    - pattern: spike
+      causes:
+        - "Fit failure due to unusual ADC shape (noise or empty histogram)"
+        - "Beam background anomaly distorting Landau shape"
+      severity: critical
+      action: "Inspect fit quality; check fit_quality.csv for this run"
+
+intt_bco_mod_r1:
+  detector: INTT
+  observable: First Fourier harmonic amplitude of BCO distribution
+  expected: "Near zero for uniform BCO; non-zero indicates periodic modulation"
+  fit_model: none
+  anomaly_types:
+    - pattern: increase
+      causes:
+        - "Growing periodic structure in BCO from timing synchronization issue"
+        - "Clock distribution developing periodic jitter"
+      severity: warning
+      action: "Check clock distribution chain; alert timing group"
+    - pattern: spike
+      causes:
+        - "Timing synchronization loss for this run"
+        - "Intermittent clock cable connection issue"
+      severity: critical
+      action: "Flag run as potentially mis-timed; exclude from physics analysis"
+
+intt_sensor_occupancy_median:
+  detector: INTT
+  observable: Median sensor occupancy across all INTT sensors
+  expected: "Proportional to luminosity; stable for fixed beam conditions"
+  fit_model: none
+  anomaly_types:
+    - pattern: gradual_drift
+      causes:
+        - "Luminosity ramp-up/ramp-down during fill"
+        - "Progressive efficiency loss from radiation damage"
+      severity: info
+      action: "Cross-check with luminosity monitors; expected during fills"
+    - pattern: sudden_drop
+      causes:
+        - "INTT partially off or not in readout for this run"
+        - "Beam loss or abort"
+        - "DAQ rate throttling"
+      severity: critical
+      action: "Check if INTT was in the trigger; verify beam status"
+
+## ====== MVTX Chip Health Metrics ======
+
+mvtx_deadchip_frac_l0:
+  detector: MVTX
+  observable: Dead chip fraction in MVTX Layer 0 (innermost)
+  expected: "Near 0; Layer 0 is innermost and most critical for vertex resolution"
+  fit_model: none
+  anomaly_types:
+    - pattern: step_increase
+      causes:
+        - "ALPIDE chip failure (single-event latchup or permanent damage)"
+        - "Wire bond failure disconnecting chip from readout"
+        - "Stave power supply issue affecting multiple chips"
+      severity: critical
+      action: "Identify dead chips from MVTX monitoring; check stave power status"
+    - pattern: gradual_increase
+      causes:
+        - "Progressive radiation damage to innermost layer"
+        - "Accumulated SEU effects causing chip lockups"
+      severity: warning
+      action: "Track dead chip map evolution; schedule power cycle if SEU-related"
+
+mvtx_hotchip_frac_l0:
+  detector: MVTX
+  observable: Hot chip fraction in MVTX Layer 0
+  expected: "Near 0; hot chips must be masked to avoid fake track seeds"
+  fit_model: none
+  anomaly_types:
+    - pattern: spike
+      causes:
+        - "Single chip developing stuck pixel or noisy column"
+        - "SEU causing chip to enter noisy state"
+        - "Beam splash or injection transient"
+      severity: critical
+      action: "Identify hot chip; mask in reconstruction; check for SEU"
+    - pattern: gradual_increase
+      causes:
+        - "Progressive radiation damage creating noisy pixels"
+        - "Threshold drift in ALPIDE front-end"
+      severity: warning
+      action: "Update hot pixel mask; consider threshold re-tuning"
+
+mvtx_deadchip_frac_l1:
+  detector: MVTX
+  observable: Dead chip fraction in MVTX Layer 1
+  expected: "Near 0; similar failure modes as Layer 0"
+  fit_model: none
+  anomaly_types:
+    - pattern: step_increase
+      causes:
+        - "ALPIDE chip failure or wire bond failure"
+        - "Stave power supply issue"
+      severity: critical
+      action: "Check MVTX monitoring for Layer 1 chip status"
+    - pattern: gradual_increase
+      causes:
+        - "Radiation damage (less than Layer 0 due to larger radius)"
+      severity: warning
+      action: "Track chip map; lower rate of damage expected vs Layer 0"
+
+mvtx_hotchip_frac_l1:
+  detector: MVTX
+  observable: Hot chip fraction in MVTX Layer 1
+  expected: "Near 0"
+  fit_model: none
+  anomaly_types:
+    - pattern: spike
+      causes:
+        - "Noisy chip or SEU"
+        - "Beam injection transient"
+      severity: critical
+      action: "Mask hot chip; check for SEU recovery"
+    - pattern: gradual_increase
+      causes:
+        - "Progressive noisy pixel accumulation"
+      severity: warning
+      action: "Update hot pixel mask"
+
+mvtx_deadchip_frac_l2:
+  detector: MVTX
+  observable: Dead chip fraction in MVTX Layer 2 (outermost)
+  expected: "Near 0; outermost layer, least radiation dose"
+  fit_model: none
+  anomaly_types:
+    - pattern: step_increase
+      causes:
+        - "ALPIDE chip failure"
+        - "Stave power supply issue"
+      severity: warning
+      action: "Check MVTX monitoring for Layer 2 chip status"
+    - pattern: gradual_increase
+      causes:
+        - "Slow degradation (rare at Layer 2 radiation levels)"
+      severity: info
+      action: "Monitor; lower priority than inner layers"
+
+mvtx_hotchip_frac_l2:
+  detector: MVTX
+  observable: Hot chip fraction in MVTX Layer 2
+  expected: "Near 0"
+  fit_model: none
+  anomaly_types:
+    - pattern: spike
+      causes:
+        - "Noisy chip or SEU"
+      severity: warning
+      action: "Mask hot chip"
+    - pattern: gradual_increase
+      causes:
+        - "Progressive noisy pixel accumulation"
+      severity: info
+      action: "Update hot pixel mask at next calibration cycle"
+
+## ====== TPC Laser Timing Metrics ======
+
+tpc_laser_time_mean_north:
+  detector: TPC
+  observable: Mean laser ionization time-sample (North endcap)
+  expected: "Stable for fixed gas conditions and E-field; tracks drift velocity"
+  fit_model: gaussian
+  anomaly_types:
+    - pattern: gradual_drift
+      causes:
+        - "Gas composition drift (O2 or H2O contamination changing drift velocity)"
+        - "Temperature gradient evolution in TPC volume"
+        - "Field cage resistor chain degradation"
+      severity: warning
+      action: "Check gas system monitors (O2, H2O ppm); compare with South side"
+    - pattern: step_change
+      causes:
+        - "Gas mixture change (intentional or accidental)"
+        - "HV setting change on field cage"
+        - "Laser calibration or alignment change"
+      severity: warning
+      action: "Check gas system logs and HV records"
+    - pattern: spike
+      causes:
+        - "Laser misfire or partial illumination"
+        - "Gas composition transient (purge or refill event)"
+      severity: critical
+      action: "Flag run for TPC calibration review; check gas system alarms"
+
+tpc_laser_time_mean_south:
+  detector: TPC
+  observable: Mean laser ionization time-sample (South endcap)
+  expected: "Should track North side; divergence flags asymmetric conditions"
+  fit_model: gaussian
+  anomaly_types:
+    - pattern: gradual_drift
+      causes:
+        - "Same as North: gas composition, temperature, or E-field drift"
+        - "South-specific field cage issue"
+      severity: warning
+      action: "Compare with North; if both drift, confirms global gas/E-field issue"
+    - pattern: divergence_from_north
+      causes:
+        - "Asymmetric gas flow or temperature gradient"
+        - "South field cage resistor chain degradation"
+        - "South laser alignment shift"
+      severity: warning
+      action: "Check N-S delta trend; alert TPC group if diverging"
+
+tpc_laser_time_delta_NS:
+  detector: TPC
+  observable: North-South laser timing difference
+  expected: "Near zero and stable; measures drift velocity asymmetry"
+  fit_model: none
+  anomaly_types:
+    - pattern: gradual_drift
+      causes:
+        - "Developing asymmetric gas flow in TPC"
+        - "Asymmetric temperature gradient"
+        - "Differential field cage degradation"
+      severity: warning
+      action: "Alert TPC group; check gas flow and temperature monitors"
+    - pattern: step_change
+      causes:
+        - "Gas system reconfiguration"
+        - "HV change on one side"
+      severity: warning
+      action: "Check TPC operations log for one-sided changes"
+    - pattern: spike
+      causes:
+        - "One laser misfired; other gave valid measurement"
+        - "Transient gas composition asymmetry"
+      severity: critical
+      action: "Check both laser systems; compare individual N and S means"
+
+## ====== TPC Cluster Shape and Resolution Metrics ======
+
+tpc_phisize_ring_slope_avg:
+  detector: TPC
+  observable: Radial slope of phi cluster size across TPC rings
+  expected: "Near zero for uniform conditions; slight slope from geometry acceptable"
+  fit_model: none
+  anomaly_types:
+    - pattern: gradual_drift
+      causes:
+        - "Gas gain gradient developing across TPC radius"
+        - "Space charge buildup affecting inner/outer rings differently"
+      severity: warning
+      action: "Check gas gain calibration; monitor space charge corrections"
+    - pattern: spike
+      causes:
+        - "One ring missing data (empty histograms for a ring)"
+        - "HV trip affecting specific TPC sector/ring"
+      severity: critical
+      action: "Check TPC HV status for all sectors; verify data completeness"
+
+tpc_zsize_ring_slope_avg:
+  detector: TPC
+  observable: Radial slope of z cluster size across TPC rings
+  expected: "Non-zero slope expected from drift-length dependent diffusion"
+  fit_model: none
+  anomaly_types:
+    - pattern: change_from_baseline
+      causes:
+        - "Gas composition change affecting longitudinal diffusion"
+        - "E-field non-uniformity change"
+      severity: warning
+      action: "Compare with expected diffusion model; check gas system"
+    - pattern: spike
+      causes:
+        - "Data quality issue in one ring"
+        - "Timing calibration error affecting z reconstruction"
+      severity: warning
+      action: "Verify TPC timing calibration; check ring-level data quality"
+
+tpc_resolution_rphi_mean:
+  detector: TPC
+  observable: Average rphi spatial resolution of TPC clusters
+  expected: "Stable for consistent alignment and gas conditions"
+  fit_model: none
+  anomaly_types:
+    - pattern: gradual_increase
+      causes:
+        - "Alignment degradation over time"
+        - "Gas contamination reducing signal-to-noise"
+        - "Space charge distortion growth"
+      severity: warning
+      action: "Check alignment constants; monitor gas purity"
+    - pattern: step_change
+      causes:
+        - "Alignment constant update"
+        - "Gas mixture change"
+      severity: info
+      action: "Verify expected from calibration changes"
+
+tpc_resolution_z_mean:
+  detector: TPC
+  observable: Average z spatial resolution of TPC clusters
+  expected: "Stable for consistent drift conditions; sensitive to drift velocity"
+  fit_model: none
+  anomaly_types:
+    - pattern: gradual_increase
+      causes:
+        - "Drift velocity calibration drifting"
+        - "Gas contamination increasing diffusion"
+      severity: warning
+      action: "Cross-check with laser timing; recalibrate drift velocity if needed"
+    - pattern: step_change
+      causes:
+        - "Drift velocity calibration update"
+        - "Gas system change"
+      severity: info
+      action: "Verify expected from calibration"
+
+tpc_sector_adc_uniform_chi2:
+  detector: TPC
+  observable: Chi2/NDF of sector ADC uniformity across 24 TPC sectors
+  expected: "Near 1.0 for balanced readout; high values flag sector problems"
+  fit_model: none
+  anomaly_types:
+    - pattern: spike
+      causes:
+        - "Dead TPC sector (HV trip or FEE failure)"
+        - "Hot sector with excessive noise"
+        - "Beam position shift illuminating TPC asymmetrically"
+      severity: critical
+      action: "Identify which sector(s) are anomalous; check TPC HV and FEE status"
+    - pattern: gradual_increase
+      causes:
+        - "Progressive gain non-uniformity across sectors"
+        - "Developing FEE issue in one sector"
+      severity: warning
+      action: "Track per-sector ADC trends; check gain calibration"

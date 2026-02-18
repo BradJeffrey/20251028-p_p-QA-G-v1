@@ -100,6 +100,79 @@ else
     WARN=$((WARN + 1))
 fi
 
+# Check verdict outputs
+echo ""
+echo "--- Verdict outputs ---"
+for vfile in out/verdicts.csv out/run_verdicts.csv out/VERDICT.md; do
+    if [ -f "$vfile" ]; then
+        rows=$(wc -l < "$vfile" | tr -d ' ')
+        echo "[ OK ] $vfile: $rows lines"
+    else
+        echo "[WARN] $vfile: not found (verdict step may not have run)"
+        WARN=$((WARN + 1))
+    fi
+done
+
+# Check fit quality outputs
+echo ""
+echo "--- Fit quality outputs ---"
+for ffile in out/fit_quality.csv out/fit_quality_flags.csv; do
+    if [ -f "$ffile" ]; then
+        rows=$(tail -n +2 "$ffile" | grep -c . || true)
+        echo "[ OK ] $ffile: $rows rows"
+    else
+        echo "[WARN] $ffile: not found (fit-quality step may not have run)"
+        WARN=$((WARN + 1))
+    fi
+done
+
+# Check correlation outputs
+echo ""
+echo "--- Correlation outputs ---"
+for cfile in out/correlation_matrix.csv out/correlation_flags.csv; do
+    if [ -f "$cfile" ]; then
+        rows=$(tail -n +2 "$cfile" | grep -c . || true)
+        echo "[ OK ] $cfile: $rows rows"
+    else
+        echo "[WARN] $cfile: not found (correlation step may not have run)"
+        WARN=$((WARN + 1))
+    fi
+done
+
+# Check PCA outputs
+echo ""
+echo "--- PCA outputs ---"
+for pfile in out/qa_pca_pc12.png out/qa_pca_scree.png out/qa_pca_loadings.png out/pca_outliers.csv; do
+    if [ -f "$pfile" ]; then
+        echo "[ OK ] $pfile"
+    else
+        echo "[WARN] $pfile: not found (PCA step may not have run)"
+        WARN=$((WARN + 1))
+    fi
+done
+
+# Check consistency summary
+echo ""
+echo "--- Consistency summary ---"
+if [ -f "out/consistency_summary.csv" ]; then
+    rows=$(tail -n +2 "out/consistency_summary.csv" | grep -c . || true)
+    echo "[ OK ] out/consistency_summary.csv: $rows metrics"
+else
+    echo "[WARN] out/consistency_summary.csv: not found"
+    WARN=$((WARN + 1))
+fi
+
+# Check dashboard
+echo ""
+echo "--- Dashboard ---"
+dashcount=$(ls -1 out/dashboard_*.png 2>/dev/null | wc -l | tr -d ' ')
+if [ "$dashcount" -gt 0 ]; then
+    echo "[ OK ] Dashboard: $dashcount PNG file(s)"
+else
+    echo "[WARN] No dashboard_*.png found"
+    WARN=$((WARN + 1))
+fi
+
 # Summary
 echo ""
 echo "=== Summary ==="

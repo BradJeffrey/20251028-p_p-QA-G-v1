@@ -43,3 +43,113 @@ intt_hits_asym:
   patterns: "Values near 0 indicate balanced occupancy; approaching 1 flags extreme imbalance."
   physics: Asymmetry between most and least occupied sensors measures detector balance.
   why: High asymmetry indicates dead or noisy sensors creating occupancy hotspots or holes.
+
+# --- INTT Physics QA Metrics (extracted by physqa_extract.C) ---
+
+intt_adc_landau_mpv:
+  formula: Landau fit MPV in [q10, q90] window
+  patterns: "Tracks silicon sensor gain; drift indicates temperature or radiation effects."
+  physics: Most probable value of Landau fit to ADC distribution; direct probe of MIP energy loss in silicon.
+  why: More precise than maxbin for tracking gain; sensitive to calibration changes and sensor degradation.
+
+intt_bco_mod_r1:
+  formula: First Fourier harmonic amplitude R1 of BCO distribution
+  patterns: "Near zero for uniform BCO; large R1 flags periodic structure."
+  physics: Quantifies first-harmonic modulation of beam-clock offset distribution.
+  why: Non-zero R1 reveals periodic timing structure; increasing R1 indicates growing synchronization issues.
+
+intt_sensor_occupancy_median:
+  formula: median(sensor occupancy histogram)
+  patterns: "Stable for consistent beam conditions; drops indicate detector efficiency loss."
+  physics: Median sensor occupancy measures typical hit rate across INTT sensors.
+  why: Tracks overall INTT activity level; sudden changes indicate luminosity shifts or readout problems.
+
+# --- MVTX Chip Health Metrics ---
+
+mvtx_deadchip_frac_l0:
+  formula: "N(occ < 0.05*median) / N(chips) for MVTX Layer 0"
+  patterns: "Stable near 0; step increases indicate chip failures."
+  physics: Fraction of MVTX Layer 0 chips classified as dead based on occupancy.
+  why: Dead chips reduce tracking coverage; sudden increases flag hardware failures.
+
+mvtx_hotchip_frac_l0:
+  formula: "N(occ > 5*median) / N(chips) for MVTX Layer 0"
+  patterns: "Stable near 0; spikes indicate noisy chips."
+  physics: Fraction of MVTX Layer 0 chips classified as hot (noisy) based on occupancy.
+  why: Hot chips inject fake hits degrading track reconstruction quality.
+
+mvtx_deadchip_frac_l1:
+  formula: "N(occ < 0.05*median) / N(chips) for MVTX Layer 1"
+  patterns: "Stable near 0; step increases indicate chip failures."
+  physics: Fraction of MVTX Layer 1 chips classified as dead.
+  why: Layer 1 is critical for primary vertex reconstruction.
+
+mvtx_hotchip_frac_l1:
+  formula: "N(occ > 5*median) / N(chips) for MVTX Layer 1"
+  patterns: "Stable near 0; spikes indicate noisy chips."
+  physics: Fraction of MVTX Layer 1 chips classified as hot.
+  why: Hot chips on Layer 1 degrade vertex resolution.
+
+mvtx_deadchip_frac_l2:
+  formula: "N(occ < 0.05*median) / N(chips) for MVTX Layer 2"
+  patterns: "Stable near 0; step increases indicate chip failures."
+  physics: Fraction of MVTX Layer 2 (outermost) chips classified as dead.
+  why: Dead chips reduce tracking seed efficiency.
+
+mvtx_hotchip_frac_l2:
+  formula: "N(occ > 5*median) / N(chips) for MVTX Layer 2"
+  patterns: "Stable near 0; spikes indicate noisy chips."
+  physics: Fraction of MVTX Layer 2 chips classified as hot.
+  why: Hot chips on outer layer increase combinatorial background.
+
+# --- TPC Laser Timing Metrics ---
+
+tpc_laser_time_mean_north:
+  formula: "Weighted Gaussian-fit mean across 24 TPC laser lines (North)"
+  patterns: "Very stable; drifts indicate field cage or gas changes."
+  physics: Average laser time-sample position for TPC North; measures electron drift velocity.
+  why: Drift velocity changes indicate gas, temperature, or electric field variations.
+
+tpc_laser_time_mean_south:
+  formula: "Weighted Gaussian-fit mean across 24 TPC laser lines (South)"
+  patterns: "Should track North side; divergence flags asymmetric conditions."
+  physics: Average laser time-sample position for TPC South endcap.
+  why: N-S comparison reveals asymmetric field cage or gas flow issues.
+
+tpc_laser_time_delta_NS:
+  formula: "tpc_laser_time_mean_south - tpc_laser_time_mean_north"
+  patterns: "Near zero and stable; drifts indicate asymmetric drift conditions."
+  physics: North-South laser timing difference in TPC.
+  why: Non-zero delta indicates asymmetric E-field, gas, or temperature gradient.
+
+# --- TPC Cluster Shape and Resolution Metrics ---
+
+tpc_phisize_ring_slope_avg:
+  formula: "Average slope of mean phi-cluster-size vs ring (R0,R1,R2)"
+  patterns: "Near zero for uniform conditions; non-zero indicates radial effects."
+  physics: Radial dependence of phi cluster size in TPC.
+  why: Reveals diffusion, gain, or gas condition gradients across TPC radius.
+
+tpc_zsize_ring_slope_avg:
+  formula: "Average slope of mean z-cluster-size vs ring (R0,R1,R2)"
+  patterns: "Non-zero slope expected from drift-length diffusion."
+  physics: Radial dependence of z cluster size in TPC.
+  why: Z-size slope reflects longitudinal diffusion; changes indicate gas or field shifts.
+
+tpc_resolution_rphi_mean:
+  formula: "Mean of rphi_error histogram across rings 0-2"
+  patterns: "Stable for consistent alignment and gas conditions."
+  physics: Average rphi spatial resolution of TPC clusters.
+  why: Resolution degradation indicates misalignment, gas contamination, or gain issues.
+
+tpc_resolution_z_mean:
+  formula: "Mean of z_error histogram across rings 0-2"
+  patterns: "Stable for consistent drift conditions."
+  physics: Average z spatial resolution of TPC clusters.
+  why: Z resolution is sensitive to drift velocity uniformity and timing calibration.
+
+tpc_sector_adc_uniform_chi2:
+  formula: "chi2/NDF of sector ADC counts vs uniform (24 sectors, 3 rings)"
+  patterns: "Near 1.0 for good uniformity; high values flag sector problems."
+  physics: Reduced chi-squared of TPC sector occupancy vs flat reference.
+  why: High chi2 indicates dead sectors, gain variations, or DAQ channel failures.

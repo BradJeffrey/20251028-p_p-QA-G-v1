@@ -10,11 +10,11 @@ ROBUST_W    ?= 5
 
 # core vs full bundles
 CORE_STEPS  = extract physqa aggregate robust merge analyze stamp
-FULL_STEPS  = $(CORE_STEPS) derived segmentcv intthealth control pca fit-quality dashboard qa-report verdict report
+FULL_STEPS  = $(CORE_STEPS) derived segmentcv intthealth control pca correlation fit-quality dashboard qa-report verdict report
 
 DATE_TAG    := $(shell date +"%Y%m%d_%H%M%S")
 
-.PHONY: all core full extract physqa aggregate robust merge analyze derived segmentcv intthealth control pca fit-quality dashboard qa-report verdict report stamp check list_runs clean clobber robust-aliases run-qa check-robust z-summary diagnose summary-docs metrics-doc full-diagnose smoke-test
+.PHONY: all core full extract physqa aggregate robust merge analyze derived segmentcv intthealth control pca correlation fit-quality dashboard qa-report verdict report stamp check list_runs clean clobber robust-aliases run-qa check-robust z-summary diagnose summary-docs metrics-doc full-diagnose smoke-test
 
 all: full
 core: $(CORE_STEPS)
@@ -58,6 +58,8 @@ segmentcv:
 	@mkdir -p out
 	-$(ROOTCMD) 'macros/segment_consistency.C("cluster_size_intt_mean")'
 	-$(ROOTCMD) 'macros/segment_consistency.C("intt_adc_peak")'
+	-$(ROOTCMD) 'macros/segment_consistency.C("intt_adc_landau_mpv")'
+	-$(ROOTCMD) 'macros/segment_consistency.C("tpc_sector_adc_uniform_chi2")'
 
 intthealth:
 	@mkdir -p out
@@ -65,8 +67,15 @@ intthealth:
 
 control:
 	@mkdir -p out
+	-$(ROOTCMD) 'macros/control_charts.C("intt_adc_peak",3.0,0.5,5.0)'
 	-$(ROOTCMD) 'macros/control_charts.C("intt_adc_landau_mpv",3.0,0.5,5.0)'
+	-$(ROOTCMD) 'macros/control_charts.C("intt_phi_chi2_reduced",3.0,0.5,5.0)'
+	-$(ROOTCMD) 'macros/control_charts.C("mvtx_deadchip_frac_l0",3.0,0.5,5.0)'
+	-$(ROOTCMD) 'macros/control_charts.C("mvtx_hotchip_frac_l0",3.0,0.5,5.0)'
+	-$(ROOTCMD) 'macros/control_charts.C("tpc_laser_time_mean_north",3.0,0.5,5.0)'
+	-$(ROOTCMD) 'macros/control_charts.C("tpc_laser_time_delta_NS",3.0,0.5,5.0)'
 	-$(ROOTCMD) 'macros/control_charts.C("tpc_sector_adc_uniform_chi2",3.0,0.5,5.0)'
+	-$(ROOTCMD) 'macros/control_charts.C("tpc_resolution_rphi_mean",3.0,0.5,5.0)'
 
 pca:
 	@mkdir -p out
@@ -79,6 +88,10 @@ dashboard:
 qa-report:
 	@mkdir -p out
 	$(ROOTCMD) 'macros/generate_report_md.C("$(CONF)")'
+
+correlation:
+	@mkdir -p out
+	-$(ROOTCMD) 'macros/correlation_matrix.C("$(WIDE)")'
 
 fit-quality:
 	@mkdir -p out

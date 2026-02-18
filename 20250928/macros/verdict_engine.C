@@ -231,6 +231,71 @@ static bool read_ladder_health(const std::string& path, std::vector<LadderHealth
   return !rows.empty();
 }
 
+// Fit quality flags: runs where fits are MARGINAL/POOR/FAILED
+struct FitFlag {
+  int run;
+  std::string histogram;
+  std::string model;
+  double chi2_ndf;
+  std::string quality;
+  std::string note;
+};
+
+static bool read_fit_quality_flags(const std::string& path, std::vector<FitFlag>& flags) {
+  std::ifstream in(path);
+  if (!in) return false;
+  std::string line;
+  bool header = true;
+  while (std::getline(in, line)) {
+    if (header) { header = false; continue; }
+    if (line.empty()) continue;
+    auto fields = split(line, ',');
+    if (fields.size() < 6) continue;
+    FitFlag f;
+    try {
+      f.run       = std::stoi(fields[0]);
+      f.histogram = fields[2];
+      f.model     = fields[3];
+      f.chi2_ndf  = std::stod(fields[4]);
+      f.quality   = fields[5];
+      f.note      = (fields.size() > 6) ? fields[6] : "";
+      // Clean quotes from note
+      if (!f.note.empty() && f.note.front()=='"') f.note.erase(0,1);
+      if (!f.note.empty() && f.note.back()=='"') f.note.pop_back();
+    } catch (...) { continue; }
+    flags.push_back(f);
+  }
+  return !flags.empty();
+}
+
+// Correlation flags: strongly correlated metric pairs
+struct CorrFlag {
+  std::string metric_a;
+  std::string metric_b;
+  double pearson_r;
+};
+
+static bool read_correlation_flags(const std::string& path, std::vector<CorrFlag>& flags) {
+  std::ifstream in(path);
+  if (!in) return false;
+  std::string line;
+  bool header = true;
+  while (std::getline(in, line)) {
+    if (header) { header = false; continue; }
+    if (line.empty()) continue;
+    auto fields = split(line, ',');
+    if (fields.size() < 3) continue;
+    CorrFlag c;
+    try {
+      c.metric_a  = fields[0];
+      c.metric_b  = fields[1];
+      c.pearson_r = std::stod(fields[2]);
+    } catch (...) { continue; }
+    flags.push_back(c);
+  }
+  return !flags.empty();
+}
+
 static bool read_consistency_summary(const std::string& path,
     std::map<std::string, std::tuple<double,double,double,int,double>>& info)
 {
@@ -403,6 +468,130 @@ static std::vector<std::string> infer_causes(
       causes.push_back("Moderate occupancy variation between sensors");
     }
   }
+  // ---- INTT Landau MPV ----
+  else if (metric.find("adc_landau_mpv") != std::string::npos) {
+    if (pattern == "gradual_drift") {
+      causes.push_back("Temperature-dependent gain drift in silicon sensors");
+      causes.push_back("Gradual radiation damage reducing charge collection");
+    } else if (pattern == "step_change") {
+      causes.push_back("Calibration constant update between runs");
+      causes.push_back("Sensor module or FPHX chip replacement");
+    } else if (pattern == "spike") {
+      causes.push_back("Landau fit failure due to anomalous ADC shape");
+      causes.push_back("Beam background anomaly distorting energy loss spectrum");
+    } else {
+      causes.push_back("Statistical fluctuation in Landau fit");
+    }
+  }
+  // ---- INTT BCO modulation ----
+  else if (metric.find("bco_mod_r1") != std::string::npos) {
+    if (pattern == "spike") {
+      causes.push_back("Timing synchronization loss for this run");
+      causes.push_back("Intermittent clock cable connection issue");
+    } else {
+      causes.push_back("Growing periodic structure in BCO from timing issue");
+      causes.push_back("Clock distribution developing periodic jitter");
+    }
+  }
+  // ---- INTT sensor occupancy ----
+  else if (metric.find("sensor_occupancy") != std::string::npos) {
+    if (pattern == "spike" || pattern == "step_change") {
+      causes.push_back("INTT partially off or not in readout");
+      causes.push_back("Beam loss or DAQ rate throttling");
+    } else {
+      causes.push_back("Luminosity ramp-up/down during fill");
+      causes.push_back("Progressive efficiency loss from radiation damage");
+    }
+  }
+  // ---- MVTX dead chip fractions ----
+  else if (metric.find("mvtx_deadchip") != std::string::npos) {
+    if (pattern == "step_change" || pattern == "spike") {
+      causes.push_back("ALPIDE chip failure (single-event latchup or permanent)");
+      causes.push_back("Wire bond failure disconnecting chip from readout");
+      causes.push_back("Stave power supply issue affecting multiple chips");
+    } else if (pattern == "gradual_drift") {
+      causes.push_back("Progressive radiation damage to MVTX silicon");
+      causes.push_back("Accumulated SEU effects causing chip lockups");
+    } else {
+      causes.push_back("Fluctuation in dead chip count");
+    }
+  }
+  // ---- MVTX hot chip fractions ----
+  else if (metric.find("mvtx_hotchip") != std::string::npos) {
+    if (pattern == "spike") {
+      causes.push_back("Single chip developing stuck pixel or noisy column");
+      causes.push_back("SEU causing chip to enter noisy state");
+      causes.push_back("Beam splash or injection transient");
+    } else {
+      causes.push_back("Progressive radiation damage creating noisy pixels");
+      causes.push_back("Threshold drift in ALPIDE front-end");
+    }
+  }
+  // ---- TPC laser timing ----
+  else if (metric.find("tpc_laser_time") != std::string::npos) {
+    if (metric.find("delta_NS") != std::string::npos) {
+      // North-South delta
+      if (pattern == "gradual_drift") {
+        causes.push_back("Developing asymmetric gas flow in TPC");
+        causes.push_back("Asymmetric temperature gradient between endcaps");
+      } else if (pattern == "spike") {
+        causes.push_back("One laser misfired; other gave valid measurement");
+        causes.push_back("Transient gas composition asymmetry");
+      } else {
+        causes.push_back("Gas system reconfiguration affecting one side");
+      }
+    } else {
+      // North or South individually
+      if (pattern == "gradual_drift") {
+        causes.push_back("Gas composition drift (O2/H2O contamination)");
+        causes.push_back("Temperature gradient evolution in TPC volume");
+        causes.push_back("Field cage resistor chain degradation");
+      } else if (pattern == "step_change") {
+        causes.push_back("Gas mixture change (intentional or accidental)");
+        causes.push_back("HV setting change on field cage");
+      } else if (pattern == "spike") {
+        causes.push_back("Laser misfire or partial illumination");
+        causes.push_back("Gas composition transient (purge or refill)");
+      } else {
+        causes.push_back("Normal variation in laser timing measurement");
+      }
+    }
+  }
+  // ---- TPC cluster shape (phi/z size slopes) ----
+  else if (metric.find("tpc_phisize") != std::string::npos ||
+           metric.find("tpc_zsize") != std::string::npos) {
+    if (pattern == "spike") {
+      causes.push_back("One TPC ring missing data (empty histograms)");
+      causes.push_back("HV trip affecting specific TPC sector/ring");
+    } else {
+      causes.push_back("Gas gain gradient developing across TPC radius");
+      causes.push_back("Space charge buildup affecting rings differently");
+    }
+  }
+  // ---- TPC resolution ----
+  else if (metric.find("tpc_resolution") != std::string::npos) {
+    if (pattern == "gradual_drift" || pattern == "sustained_shift") {
+      causes.push_back("Alignment degradation over time");
+      causes.push_back("Gas contamination reducing signal-to-noise");
+      causes.push_back("Space charge distortion growth");
+    } else if (pattern == "step_change") {
+      causes.push_back("Alignment constant update applied");
+      causes.push_back("Gas mixture change");
+    } else {
+      causes.push_back("Normal variation in TPC cluster resolution");
+    }
+  }
+  // ---- TPC sector uniformity ----
+  else if (metric.find("tpc_sector_adc") != std::string::npos) {
+    if (pattern == "spike") {
+      causes.push_back("Dead TPC sector (HV trip or FEE failure)");
+      causes.push_back("Hot sector with excessive noise");
+      causes.push_back("Beam position shift illuminating TPC asymmetrically");
+    } else {
+      causes.push_back("Progressive gain non-uniformity across sectors");
+      causes.push_back("Developing FEE issue in one TPC sector");
+    }
+  }
   // ---- Generic fallback ----
   else {
     causes.push_back("Anomalous value detected; manual inspection recommended");
@@ -420,13 +609,31 @@ static std::string infer_action(const std::string& metric, const std::string& pa
       return "Flag run for timing review; alert trigger/timing group";
     if (metric.find("phi") != std::string::npos)
       return "Run ladder health check; inspect phi distribution for this run";
+    if (metric.find("mvtx_deadchip") != std::string::npos)
+      return "Identify dead chips from MVTX monitoring; check stave power";
+    if (metric.find("mvtx_hotchip") != std::string::npos)
+      return "Mask hot chip in reconstruction; check for SEU recovery";
+    if (metric.find("tpc_laser") != std::string::npos)
+      return "Flag run for TPC calibration review; check gas system alarms";
+    if (metric.find("tpc_sector") != std::string::npos)
+      return "Identify anomalous sector(s); check TPC HV and FEE status";
+    if (metric.find("tpc_resolution") != std::string::npos)
+      return "Check TPC alignment and gas purity; flag for recalibration";
     return "Flag run for exclusion from physics analysis; inspect raw histograms";
   }
   if (severity == "warning") {
-    if (pattern == "gradual_drift")
+    if (pattern == "gradual_drift") {
+      if (metric.find("tpc_laser") != std::string::npos)
+        return "Check gas system monitors (O2, H2O ppm); compare N and S sides";
+      if (metric.find("mvtx") != std::string::npos)
+        return "Track chip map evolution; schedule power cycle if SEU-related";
       return "Monitor trend over next runs; check hardware logs for correlated changes";
-    if (pattern == "step_change")
+    }
+    if (pattern == "step_change") {
+      if (metric.find("tpc") != std::string::npos)
+        return "Check TPC operations log for gas, HV, or calibration changes";
       return "Check run logbook for calibration or hardware interventions near this run";
+    }
     return "Note for review; compare with other metrics for correlated anomalies";
   }
   return "No action needed; within expected variation";
@@ -456,6 +663,27 @@ void verdict_engine(const char* conf = "metrics.conf") {
   read_ladder_health("out/intt_ladder_health.csv", ladder_health);
   std::map<int, LadderHealth> ladder_by_run;
   for (auto& h : ladder_health) ladder_by_run[h.run] = h;
+
+  // Fit quality flags (per-run poor fits)
+  std::vector<FitFlag> fit_flags;
+  read_fit_quality_flags("out/fit_quality_flags.csv", fit_flags);
+  // Index by run -> list of flags
+  std::map<int, std::vector<FitFlag>> fit_by_run;
+  for (auto& ff : fit_flags) fit_by_run[ff.run].push_back(ff);
+  if (!fit_flags.empty())
+    std::cout << "[VERDICT] Loaded " << fit_flags.size() << " fit quality flags\n";
+
+  // Correlation flags (strongly correlated metric pairs)
+  std::vector<CorrFlag> corr_flags;
+  read_correlation_flags("out/correlation_flags.csv", corr_flags);
+  // Build adjacency: metric -> set of correlated partners
+  std::map<std::string, std::set<std::string>> corr_partners;
+  for (auto& cf : corr_flags) {
+    corr_partners[cf.metric_a].insert(cf.metric_b);
+    corr_partners[cf.metric_b].insert(cf.metric_a);
+  }
+  if (!corr_flags.empty())
+    std::cout << "[VERDICT] Loaded " << corr_flags.size() << " correlation flags\n";
 
   // Collect all runs across all metrics
   std::set<int> all_runs;
@@ -552,6 +780,31 @@ void verdict_engine(const char* conf = "metrics.conf") {
 
         // Infer physics causes
         v.causes = infer_causes(m, v.pattern, row.value, row.z_local, dead, hot);
+
+        // Enrich with fit quality context
+        if (fit_by_run.count(row.run)) {
+          for (auto& ff : fit_by_run[row.run]) {
+            if (ff.quality == "POOR" || ff.quality == "FAILED") {
+              v.causes.push_back("Fit quality " + ff.quality + " for " + ff.histogram +
+                                 " (chi2/NDF=" + std::to_string(ff.chi2_ndf).substr(0,5) + ")");
+            }
+          }
+        }
+
+        // Enrich with correlation context
+        if (corr_partners.count(m)) {
+          // Check if any correlated partner is also flagged for this run
+          for (auto& partner : corr_partners[m]) {
+            for (auto& ov : all_verdicts) {
+              if (ov.run == row.run && ov.metric == partner && ov.verdict != "GOOD") {
+                v.causes.push_back("Correlated anomaly: " + partner +
+                                   " also flagged (R>" + std::to_string(0.7).substr(0,3) + ")");
+                break;
+              }
+            }
+          }
+        }
+
         v.action = infer_action(m, v.pattern, v.severity);
       }
 
