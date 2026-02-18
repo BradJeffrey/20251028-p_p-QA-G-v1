@@ -10,11 +10,11 @@ ROBUST_W    ?= 5
 
 # core vs full bundles
 CORE_STEPS  = extract physqa aggregate robust merge analyze stamp
-FULL_STEPS  = $(CORE_STEPS) derived segmentcv intthealth control pca dashboard qa-report report
+FULL_STEPS  = $(CORE_STEPS) derived segmentcv intthealth control pca fit-quality dashboard qa-report verdict report
 
 DATE_TAG    := $(shell date +"%Y%m%d_%H%M%S")
 
-.PHONY: all core full extract physqa aggregate robust merge analyze derived segmentcv intthealth control pca dashboard qa-report report stamp check list_runs clean clobber robust-aliases run-qa check-robust z-summary diagnose summary-docs metrics-doc full-diagnose smoke-test
+.PHONY: all core full extract physqa aggregate robust merge analyze derived segmentcv intthealth control pca fit-quality dashboard qa-report verdict report stamp check list_runs clean clobber robust-aliases run-qa check-robust z-summary diagnose summary-docs metrics-doc full-diagnose smoke-test
 
 all: full
 core: $(CORE_STEPS)
@@ -79,6 +79,14 @@ dashboard:
 qa-report:
 	@mkdir -p out
 	$(ROOTCMD) 'macros/generate_report_md.C("$(CONF)")'
+
+fit-quality:
+	@mkdir -p out
+	$(ROOTCMD) 'macros/fit_quality.C("$(LIST)")'
+
+verdict:
+	@mkdir -p out
+	$(ROOTCMD) 'macros/verdict_engine.C("$(CONF)")'
 
 report:
 	@mkdir -p out

@@ -1,0 +1,210 @@
+## Physics Rules Knowledge Base
+##
+## Each metric has physics-informed rules for automated diagnosis.
+## The verdict engine reads this file and uses it to explain WHY
+## a metric was flagged, with plausible hardware/physics causes.
+##
+## Fields:
+##   detector:     Which subsystem (INTT, MVTX, TPC)
+##   observable:   What physical quantity is being measured
+##   expected:     What a healthy value looks like
+##   fit_model:    Recommended fit model for this histogram
+##   anomaly_types: List of anomaly patterns and their diagnoses
+##     - pattern:  The statistical signature
+##       causes:   Plausible physics/hardware/engineering explanations
+##       severity: How serious this anomaly is (info/warning/critical)
+##       action:   Recommended next step
+
+intt_adc_peak:
+  detector: INTT
+  observable: ADC peak position (most probable signal amplitude)
+  expected: Stable within 1-2 bins across runs; reflects silicon sensor gain
+  fit_model: landau
+  anomaly_types:
+    - pattern: gradual_drift
+      causes:
+        - "Temperature-dependent gain drift in silicon sensors"
+        - "Gradual radiation damage accumulating over run period"
+        - "Power supply voltage drift affecting front-end amplifiers"
+      severity: warning
+      action: "Check INTT temperature logs and HV records for correlated drift"
+    - pattern: step_change
+      causes:
+        - "Calibration update applied between runs"
+        - "Hardware swap (replacement sensor module or FPHX chip)"
+        - "Threshold reconfiguration in DAQ"
+      severity: warning
+      action: "Check run logbook for calibration or hardware interventions"
+    - pattern: spike
+      causes:
+        - "Noisy run with pickup interference"
+        - "Beam conditions anomaly (background spike)"
+        - "Single-event upset in readout electronics"
+      severity: critical
+      action: "Flag run for exclusion; cross-check with beam conditions log"
+
+intt_adc_median_p50:
+  detector: INTT
+  observable: ADC median (typical signal amplitude)
+  expected: Tracks ADC peak but less sensitive to tail structure
+  fit_model: landau
+  anomaly_types:
+    - pattern: gradual_drift
+      causes:
+        - "Same gain drift as ADC peak but median is more robust to noise tails"
+        - "Systematic baseline shift in front-end electronics"
+      severity: warning
+      action: "Compare with ADC peak drift; if both drift, confirms gain issue"
+    - pattern: divergence_from_peak
+      causes:
+        - "Tail structure changing (noise or signal shape evolution)"
+        - "Growing electronic noise filling ADC tail bins"
+      severity: warning
+      action: "Inspect full ADC distribution shape for this run"
+
+intt_adc_p90:
+  detector: INTT
+  observable: ADC 90th percentile (upper tail probe)
+  expected: Sensitive to high-end tail; stable unless noise conditions change
+  fit_model: landau
+  anomaly_types:
+    - pattern: increase
+      causes:
+        - "Growing electronic noise or crosstalk between channels"
+        - "Pickup interference from nearby equipment"
+        - "Beam background increase filling high-ADC bins"
+      severity: warning
+      action: "Check noise rates in INTT monitoring; compare with beam loss monitors"
+    - pattern: decrease
+      causes:
+        - "Threshold increase cutting into signal tail"
+        - "Reduced particle rate (beam intensity drop)"
+      severity: info
+      action: "Verify beam intensity from luminosity monitors"
+
+intt_phi_uniform_r1:
+  detector: INTT
+  observable: KS p-value of azimuthal cluster distribution vs uniform
+  expected: "High p-value (>0.05) for isotropic collisions; low values flag non-uniformity"
+  fit_model: none
+  anomaly_types:
+    - pattern: sudden_drop
+      causes:
+        - "Dead ladder or chip creating azimuthal hole"
+        - "Hot channel dominating one phi sector"
+        - "HV trip on one sensor module"
+      severity: critical
+      action: "Run intt_ladder_health for this run to identify dead/hot ladders"
+    - pattern: gradual_decrease
+      causes:
+        - "Progressive channel degradation"
+        - "Slowly developing wire bond failures"
+        - "Threshold drift making some sectors less efficient"
+      severity: warning
+      action: "Compare with ladder health trend over time"
+
+intt_phi_chi2_reduced:
+  detector: INTT
+  observable: Chi2/NDF of phi distribution vs uniform reference
+  expected: "Near 1.0 for good uniformity; sensitive to localized excess/deficit"
+  fit_model: none
+  anomaly_types:
+    - pattern: spike
+      causes:
+        - "Single hot ladder producing localized excess"
+        - "Dead module creating localized deficit"
+        - "Beam position offset illuminating detector asymmetrically"
+      severity: critical
+      action: "Cross-reference with phi uniformity KS; if both bad, confirms localized issue"
+    - pattern: gradual_increase
+      causes:
+        - "Progressive efficiency loss in specific phi sector"
+        - "Developing noise in one readout chain"
+      severity: warning
+      action: "Check phi distribution shape evolution across runs"
+
+intt_bco_peak:
+  detector: INTT
+  observable: Beam clock offset peak position
+  expected: "May show discrete jumps (phase toggling is normal); monotone drift is not"
+  fit_model: none
+  anomaly_types:
+    - pattern: discrete_jump
+      causes:
+        - "Normal BCO phase toggling between two states (expected behavior)"
+        - "DAQ timing reconfiguration"
+      severity: info
+      action: "Check if jump is to a known BCO phase state; if so, no action needed"
+    - pattern: monotone_drift
+      causes:
+        - "Clock oscillator frequency drift"
+        - "Timing alignment degradation"
+        - "PLL (phase-locked loop) instability in readout"
+      severity: critical
+      action: "Alert timing/trigger group; check clock distribution system"
+    - pattern: erratic
+      causes:
+        - "Timing synchronization loss"
+        - "Intermittent cable/connection issue in clock distribution"
+      severity: critical
+      action: "Flag runs as potentially mis-timed; exclude from physics analysis"
+
+cluster_size_intt_mean:
+  detector: INTT
+  observable: Mean cluster size (number of strips per cluster)
+  expected: "Stable around 1.5-3 strips for normal operations"
+  fit_model: none
+  anomaly_types:
+    - pattern: increase
+      causes:
+        - "Threshold lowered, capturing more noise hits into clusters"
+        - "Increasing electronic noise widening clusters"
+        - "Radiation damage increasing charge sharing between strips"
+      severity: warning
+      action: "Check threshold settings in INTT DAQ configuration"
+    - pattern: decrease
+      causes:
+        - "Threshold raised, splitting clusters"
+        - "Efficiency loss (fewer charge-sharing hits reconstructed)"
+        - "Gain decrease reducing signal-to-noise"
+      severity: warning
+      action: "Cross-check with ADC peak; if ADC also drops, confirms gain issue"
+
+cluster_phi_intt_rms:
+  detector: INTT
+  observable: RMS of azimuthal cluster distribution
+  expected: "Approximately constant for uniform illumination (~1.8 rad for full 2pi)"
+  fit_model: none
+  anomaly_types:
+    - pattern: narrowing
+      causes:
+        - "Dead sectors reducing active azimuthal coverage"
+        - "Beam position shift concentrating hits in one region"
+      severity: warning
+      action: "Check beam position monitors; run phi uniformity checks"
+    - pattern: broadening
+      causes:
+        - "Noise hits spreading uniformly (less concerning)"
+        - "New sectors coming online after repair"
+      severity: info
+      action: "Verify by checking total hit count trend"
+
+intt_hits_asym:
+  detector: INTT
+  observable: "Hit asymmetry: (max_occupancy - min_occupancy) / (max + min)"
+  expected: "Near 0 for balanced detector; approaching 1 indicates severe imbalance"
+  fit_model: none
+  anomaly_types:
+    - pattern: high_asymmetry
+      causes:
+        - "Dead sensor producing zero occupancy (min -> 0, asym -> 1)"
+        - "Hot sensor with extreme noise (max >> mean)"
+        - "Beam halo hitting detector asymmetrically"
+      severity: critical
+      action: "Run ladder health check; identify specific dead/hot sensors"
+    - pattern: all_nan
+      causes:
+        - "Sensor occupancy histogram not filled (INTT may be OFF or not in readout)"
+        - "Short run with insufficient statistics"
+      severity: info
+      action: "Check if INTT was included in run configuration"

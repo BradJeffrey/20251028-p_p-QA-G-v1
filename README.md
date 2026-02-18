@@ -1,8 +1,8 @@
 # sPHENIX Real Data QA Pipeline
 
-A reproducible quality-assurance pipeline for sPHENIX detector data, built on CERN ROOT. It extracts physics metrics from per-run histogram files, aggregates them with configurable weighting, detects outliers via robust z-scores, and produces CSV summaries and visual dashboards.
+A reproducible quality-assurance pipeline for sPHENIX detector data, built on CERN ROOT. It extracts physics metrics from per-run histogram files, aggregates them with configurable weighting, detects outliers via robust z-scores, and **automatically diagnoses anomalies with physics-informed reasoning**.
 
-The pipeline currently targets **INTT** (intermediate silicon tracker) histograms across 10 metrics covering ADC distributions, cluster properties, beam-clock offsets, and sensor occupancy.
+The pipeline currently targets **INTT** (intermediate silicon tracker) histograms across 10 metrics covering ADC distributions, cluster properties, beam-clock offsets, and sensor occupancy. It produces per-run verdicts (GOOD / SUSPECT / BAD) with explanations of likely hardware, physics, or engineering causes for any flags.
 
 ## Quick start
 
@@ -48,6 +48,8 @@ make full
 | **QA Report** | `qa-report` | Generates `REPORT.md` with per-metric statistics and health overview |
 | **PCA** | `pca` | Multi-metric principal component analysis |
 | **Control charts** | `control` | Statistical process control charts |
+| **Fit quality** | `fit-quality` | Physics-informed fit assessment (Landau, uniformity chi2, Fourier) |
+| **Verdict** | `verdict` | Automated run verdicts with physics-informed diagnosis |
 | **Report** | `report` | Consolidated QA report PDF |
 | **Smoke test** | `smoke-test` | Shell-based pipeline validation (no Python dependency) |
 
@@ -110,6 +112,8 @@ Aggregation methods include `maxbin`, `median`, `p90`, `mean`, `rms`, `ks_unifor
 | `pca_multimetric.C` | PCA across metrics |
 | `intt_ladder_health.C` | INTT detector health diagnostics |
 | `control_charts.C` | Statistical control charts |
+| `verdict_engine.C` | Automated physics-informed run verdicts and diagnosis |
+| `fit_quality.C` | Per-histogram fit quality assessment (Landau, chi2, Fourier) |
 
 ## Outputs
 
@@ -121,8 +125,34 @@ After a full pipeline run, `20250928/out/` contains:
 - **`metric_*_perrun.{png,pdf}`** -- per-metric trend plots with outlier annotations
 - **`dashboard_NxM.{png,pdf}`** -- auto-sized summary dashboard (grid scales with metric count)
 - **`REPORT.md`** -- per-metric statistics table and health overview
+- **`VERDICT.md`** -- automated physics-informed run verdicts and diagnosis report
+- **`verdicts.csv`** -- per-run, per-metric machine-readable verdicts
+- **`run_verdicts.csv`** -- per-run aggregate verdict (GOOD/SUSPECT/BAD)
+- **`fit_quality.csv`** -- per-histogram fit results with quality flags
 - **`consistency_summary.csv`** -- physics consistency flags
 - **`_stamp.txt`** -- session metadata (date, run range, config)
+
+## Automated verdict system
+
+The pipeline includes a physics-informed verdict engine that automatically classifies each run:
+
+- **GOOD** -- all metrics within expected ranges
+- **SUSPECT** -- one or more metrics flagged for review
+- **BAD** -- severe anomalies detected; run recommended for exclusion
+
+For every flagged run, the engine reports:
+- **Pattern**: what kind of anomaly (spike, gradual drift, step change, sustained shift)
+- **Causes**: plausible physics/hardware/engineering explanations (e.g., "Temperature-dependent gain drift in INTT silicon sensors")
+- **Action**: recommended next step (e.g., "Check INTT temperature logs and HV records")
+
+The reasoning is driven by a physics knowledge base (`configs/physics_rules.yaml`) that encodes detector-specific domain knowledge. The engine reads:
+- Robust z-scores from per-run CSVs
+- QC status from consistency analysis
+- Control chart flags (Shewhart + CUSUM)
+- INTT ladder health (dead/hot counts)
+- Fit quality assessments
+
+Results are in `out/VERDICT.md` (human-readable) and `out/verdicts.csv` (machine-readable).
 
 ## Validation
 
