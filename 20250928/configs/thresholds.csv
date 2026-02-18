@@ -1,0 +1,10 @@
+metric,lo,hi
+intt_adc_peak,,
+intt_adc_median_p50,,
+intt_adc_p90,,
+intt_phi_uniform_r1,,
+intt_phi_chi2_reduced,,5.0
+intt_bco_peak,,
+cluster_size_intt_mean,,
+cluster_phi_intt_rms,,
+intt_hits_asym,,1.0

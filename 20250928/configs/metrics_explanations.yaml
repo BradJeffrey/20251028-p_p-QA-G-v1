@@ -3,8 +3,43 @@ intt_adc_peak:
   patterns: "Slow drift\u2192aging/temperature; step change\u2192calibration or hardware swap."
   physics: Peak ADC location tracks gain; shifts indicate gain drift or calibration shifts.
   why: Stability across run number implies consistent amplification; jumps/drifts are red flags.
+intt_adc_median_p50:
+  formula: quantile(ADC, 0.5)
+  patterns: "Tracks peak but less sensitive to tail structure; step changes indicate gain shifts."
+  physics: Median ADC value reflects typical signal amplitude, robust to outlier bins.
+  why: Complements peak; median is less affected by noise tails or rare high-ADC hits.
+intt_adc_p90:
+  formula: quantile(ADC, 0.9)
+  patterns: "Sensitive to high-end tail growth; broadening indicates noise or pickup."
+  physics: 90th percentile of ADC spectrum probes the upper tail where noise and signal overlap.
+  why: A rising p90 without a corresponding peak shift suggests growing electronic noise or crosstalk.
+intt_phi_uniform_r1:
+  formula: KS p-value vs uniform
+  patterns: "Low p-value indicates non-uniform phi coverage; sudden drops flag dead or noisy sectors."
+  physics: Cluster azimuthal distribution should be uniform for an isotropic source; deviations indicate dead/hot channels.
+  why: Kolmogorov-Smirnov test quantifies departure from ideal uniformity in a single number.
+intt_phi_chi2_reduced:
+  formula: chi2/NDF vs uniform
+  patterns: "Values near 1.0 indicate uniformity; large values flag localized excess or deficit."
+  physics: Reduced chi-squared of phi distribution against a flat reference; sensitive to bin-level deviations.
+  why: More sensitive than KS to localized structure (e.g., a single hot ladder) rather than broad shape changes.
 intt_bco_peak:
   formula: argmax_b BCO(b)
   patterns: "Alternating offsets\u2192phase toggling; monotone drift\u2192clock drift."
   physics: Aligns timing to bunch crossing; shifts suggest clock/phase issues.
   why: Run-dependent offsets reveal timing misalignment.
+cluster_size_intt_mean:
+  formula: mean(clusterSize)
+  patterns: "Stable around 1.5-3 strips; increase indicates noise or threshold drift."
+  physics: Average number of strips per cluster reflects charge sharing and threshold settings.
+  why: Growing cluster size suggests lowered thresholds or increased noise; shrinking suggests over-threshold or efficiency loss.
+cluster_phi_intt_rms:
+  formula: RMS(clusterPhi)
+  patterns: "Should be approximately constant for uniform illumination; narrowing or broadening flags acceptance changes."
+  physics: RMS of azimuthal cluster distribution measures the spread of hits around the detector.
+  why: A stable RMS confirms consistent geometric acceptance; changes indicate dead regions or beam position shifts.
+intt_hits_asym:
+  formula: (max_occ - min_occ) / (max_occ + min_occ)
+  patterns: "Values near 0 indicate balanced occupancy; approaching 1 flags extreme imbalance."
+  physics: Asymmetry between most and least occupied sensors measures detector balance.
+  why: High asymmetry indicates dead or noisy sensors creating occupancy hotspots or holes.

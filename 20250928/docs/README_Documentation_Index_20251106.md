@@ -28,14 +28,14 @@ This file explains **what each document is for** and **how to use them together*
    make run-qa
    # or manual:
    cd 20250928
-   root -l -b -q 'macros/extract_quick.C("lists/files.txt")'
+   root -l -b -q 'macros/extract_metrics_v2.C("lists/files.txt","metrics.conf")'
    root -l -b -q 'macros/aggregate_per_run_v2.C("metrics.conf","entries")'
-   root -l -b -q 'macros/plot_dashboard.C()'
+   root -l -b -q 'macros/plot_dashboard.C("metrics.conf")'
    ```
 3. **Inspect outputs** in `20250928/out/`:
    - `metrics_*.csv`, `*_perrun.csv`
    - `metric_*_perrun.{png,pdf}`
-   - `dashboard_intt_2x2.{png,pdf}`
+   - `dashboard_NxM.{png,pdf}` (auto-sized grid)
 4. If something looks off (e.g., NaNs or flat axes), check **metric definitions and extraction code** in `REALDATA_QA_Code_Documentation_20251106.md` and the macros it references (e.g., `extract_quick.C`, `aggregate_per_run_v2.C`, `plot_dashboard.C`).
 
 ### B. Generate/refresh changelog

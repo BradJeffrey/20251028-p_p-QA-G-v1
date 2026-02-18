@@ -2,19 +2,19 @@
 ROOTCMD     ?= root -l -b -q
 LIST        ?= lists/files.txt
 CONF        ?= metrics.conf
-MARKERS     ?= config/markers.csv
-THRESH      ?= config/thresholds.csv
+MARKERS     ?= configs/markers.csv
+THRESH      ?= configs/thresholds.csv
 WEIGHTING   ?= ivar                       # ivar | entries | mean
 WIDE        ?= out/metrics_perrun_wide.csv
 ROBUST_W    ?= 5
 
 # core vs full bundles
 CORE_STEPS  = extract physqa aggregate robust merge analyze stamp
-FULL_STEPS  = $(CORE_STEPS) derived segmentcv intthealth control pca report
+FULL_STEPS  = $(CORE_STEPS) derived segmentcv intthealth control pca dashboard qa-report report
 
 DATE_TAG    := $(shell date +"%Y%m%d_%H%M%S")
 
-.PHONY: all core full extract physqa aggregate robust merge analyze derived segmentcv intthealth control pca report stamp check list_runs clean clobber
+.PHONY: all core full extract physqa aggregate robust merge analyze derived segmentcv intthealth control pca dashboard qa-report report stamp check list_runs clean clobber robust-aliases run-qa check-robust z-summary diagnose summary-docs metrics-doc full-diagnose smoke-test
 
 all: full
 core: $(CORE_STEPS)
@@ -57,7 +57,7 @@ derived:
 segmentcv:
 	@mkdir -p out
 	-$(ROOTCMD) 'macros/segment_consistency.C("cluster_size_intt_mean")'
-	-$(ROOTCMD) 'macros/segment_cosisntency.C("intt_admaxbinak")'
+	-$(ROOTCMD) 'macros/segment_consistency.C("intt_adc_peak")'
 
 intthealth:
 	@mkdir -p out
@@ -71,6 +71,14 @@ control:
 pca:
 	@mkdir -p out
 	-$(ROOTCMD) 'macros/pca_multimetric.C("$(WIDE)")'
+
+dashboard:
+	@mkdir -p out
+	$(ROOTCMD) 'macros/plot_dashboard.C("$(CONF)")'
+
+qa-report:
+	@mkdir -p out
+	$(ROOTCMD) 'macros/generate_report_md.C("$(CONF)")'
 
 report:
 	@mkdir -p out
@@ -109,12 +117,6 @@ clean:
 
 clobber: clean
 	@rm -f out/metrics_*.csv out/_stamp.txt out/metrics_perrun_wide.csv out/consistency_summary.csv
-# ---------- QA extensions ----------
-ROBUST_W ?= 5
-
-robust:
-	@echo "[Makefile] Running robust z (W=$(ROBUST_W))..."
-	root -l -b -q 'macros/add_robust_z.C("metrics.conf",$(ROBUST_W))'
 
 robust-aliases:
 	@echo "[Makefile] Copy metrics_* -> metric_* per-run CSV aliases"
@@ -125,11 +127,11 @@ robust-aliases:
 
 run-qa:
 	@echo "[Makefile] extract → aggregate → robust → alias → dashboard"
-	root -l -b -q 'macros/extract_quick.C("lists/files.txt")'
-	root -l -b -q 'macros/aggregate_per_run_v2.C("metrics.conf","entries")'
+	$(ROOTCMD) 'macros/extract_quick.C("$(LIST)")'
+	$(ROOTCMD) 'macros/aggregate_per_run_v2.C("$(CONF)","entries")'
 	$(MAKE) robust ROBUST_W=$(ROBUST_W)
 	$(MAKE) robust-aliases
-	root -l -b -q 'macros/plot_dashboard.C()'
+	$(ROOTCMD) 'macros/plot_dashboard.C("$(CONF)")'
 
 check-robust:
 	./scripts/validate_perrun_schema.sh
@@ -140,15 +142,19 @@ z-summary:
 # diagnostics and summary targets
 diagnose:
 	@echo "[Makefile] Running diagnostics for physics quality..."
-	root -l -b -q 'macros/diagnose_runs.C()'
+	$(ROOTCMD) 'macros/diagnose_runs.C()'
 
 summary-docs:
 	@echo "[Makefile] Building per-run summary markdown..."
-	root -l -b -q 'macros/build_summary_docs.C()'
+	$(ROOTCMD) 'macros/build_summary_docs.C()'
 
 metrics-doc:
 	@echo "[Makefile] Generating metrics documentation..."
-	root -l -b -q 'macros/generate_metrics_doc.C()'
+	$(ROOTCMD) 'macros/generate_metrics_doc.C()'
 
 full-diagnose: diagnose summary-docs metrics-doc
+
+smoke-test:
+	@echo "[Makefile] Running smoke test..."
+	./scripts/smoke_test.sh "$(CONF)"
 

@@ -99,6 +99,28 @@ static double h_chi2_uniform_red(TH1* h) {
   std::unique_ptr<TH1> u(make_uniform_like(h,"__qa_u_chi"));
   return h->Chi2Test(u.get(), "CHI2/NDF");
 }
+static double h_mean(TH1* h) {
+  if (h->GetEntries()<=0) return std::numeric_limits<double>::quiet_NaN();
+  return h->GetMean();
+}
+static double h_rms(TH1* h) {
+  if (h->GetEntries()<=0) return std::numeric_limits<double>::quiet_NaN();
+  return h->GetRMS();
+}
+static double h_asym(TH1* h) {
+  if (h->GetEntries()<=0) return std::numeric_limits<double>::quiet_NaN();
+  int nb = h->GetXaxis()->GetNbins();
+  if (nb<=0) return std::numeric_limits<double>::quiet_NaN();
+  double mx = h->GetBinContent(1), mn = h->GetBinContent(1);
+  for (int i=2; i<=nb; ++i) {
+    double c = h->GetBinContent(i);
+    if (c>mx) mx=c;
+    if (c<mn) mn=c;
+  }
+  double denom = mx + mn;
+  if (denom<=0) return std::numeric_limits<double>::quiet_NaN();
+  return (mx - mn) / denom;
+}
 
 struct MetricDef { std::string metric, hist, method; };
 
@@ -187,6 +209,9 @@ void extract_metrics_v2(const char* listspath="lists/files.txt", const char* con
         else if (m=="p90")              value = h_quantile(h, 0.90);
         else if (m=="ks_uniform_p")     value = h_ks_uniform_p(h);
         else if (m=="chi2_uniform_red") value = h_chi2_uniform_red(h);
+        else if (m=="mean")             value = h_mean(h);
+        else if (m=="rms")              value = h_rms(h);
+        else if (m=="asym")             value = h_asym(h);
         else {
           std::cerr << "[INFO] unknown method '" << m << "' for metric " << d.metric << " — writing NaN/0 row\n";
           value = std::numeric_limits<double>::quiet_NaN();

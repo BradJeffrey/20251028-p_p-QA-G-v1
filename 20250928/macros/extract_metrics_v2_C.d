@@ -1,4 +1,0 @@
-
-# DO NOT DELETE
-./macros/extract_metrics_v2_C.so: /opt/homebrew/Cellar/root/6.36.00/include/root/RVersion.h /opt/homebrew/Cellar/root/6.36.00/include/root/ROOT/RConfig.hxx /opt/homebrew/Cellar/root/6.36.00/include/root/TClass.h /opt/homebrew/Cellar/root/6.36.00/include/root/TDictAttributeMap.h /opt/homebrew/Cellar/root/6.36.00/include/root/TInterpreter.h /opt/homebrew/Cellar/root/6.36.00/include/root/TROOT.h /opt/homebrew/Cellar/root/6.36.00/include/root/TBuffer.h /opt/homebrew/Cellar/root/6.36.00/include/root/TMemberInspector.h /opt/homebrew/Cellar/root/6.36.00/include/root/TError.h /opt/homebrew/Cellar/root/6.36.00/include/root/RtypesImp.h /opt/homebrew/Cellar/root/6.36.00/include/root/TIsAProxy.h /opt/homebrew/Cellar/root/6.36.00/include/root/TFileMergeInfo.h /opt/homebrew/Cellar/root/6.36.00/include/root/TCollectionProxyInfo.h /opt/homebrew/bin/rootcling
-extract_metrics_v2_C__ROOTBUILDVERSION= 6.36.000

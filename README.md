@@ -42,12 +42,14 @@ make full
 | **Extract** | `extract` | Reads histograms from each ROOT file, computes per-file metric values, writes `metrics_*.csv` |
 | **Aggregate** | `aggregate` | Pools per-file CSVs into per-run summaries (`metrics_*_perrun.csv`) with configurable weighting |
 | **Robust Z** | `robust` | Appends local median, MAD, and z-score columns; flags weak (\|z\|>3) and strong (\|z\|>5) outliers |
-| **Dashboard** | `dashboard` | Generates per-metric trend plots and a 2x2 summary dashboard (PNG + PDF) |
+| **Dashboard** | `dashboard` | Config-driven trend plots and auto-sized summary dashboard (PNG + PDF) |
 | **Merge** | `merge` | Joins all per-run CSVs into a single wide-format CSV |
 | **Consistency** | `analyze` | Runs physics consistency checks across metrics |
+| **QA Report** | `qa-report` | Generates `REPORT.md` with per-metric statistics and health overview |
 | **PCA** | `pca` | Multi-metric principal component analysis |
 | **Control charts** | `control` | Statistical process control charts |
 | **Report** | `report` | Consolidated QA report PDF |
+| **Smoke test** | `smoke-test` | Shell-based pipeline validation (no Python dependency) |
 
 ## Configuration
 
@@ -69,6 +71,8 @@ Aggregation methods include `maxbin`, `median`, `p90`, `mean`, `rms`, `ks_unifor
 | `CONF` | `metrics.conf` | Metric definitions |
 | `WEIGHTING` | `entries` | Aggregation weighting: `ivar`, `entries`, or `mean` |
 | `ROBUST_W` | `5` | Sliding window width for robust z-scores |
+| `THRESH` | `configs/thresholds.csv` | Per-metric hard threshold bounds |
+| `MARKERS` | `configs/markers.csv` | Known-event markers (beam trips, calibrations) |
 
 ## Project layout
 
@@ -81,8 +85,8 @@ Aggregation methods include `maxbin`, `median`, `p90`, `mean`, `rms`, `ks_unifor
 │   ├── lists/files.txt         # Input ROOT file list
 │   ├── data/                   # Input ROOT histogram files (LFS)
 │   ├── macros/                 # ROOT C++ macros (~29 files)
-│   ├── configs/                # YAML configs (cluster map, thresholds, explanations)
-│   ├── scripts/                # Validation & utility scripts
+│   ├── configs/                # YAML + CSV configs (thresholds, markers, explanations)
+│   ├── scripts/                # Validation & utility scripts (smoke_test.sh)
 │   ├── out/                    # All outputs: CSVs, plots, reports (LFS)
 │   ├── docs/                   # Documentation & changelogs
 │   └── diagnostics/            # Diagnostic output bundles
@@ -98,8 +102,10 @@ Aggregation methods include `maxbin`, `median`, `p90`, `mean`, `rms`, `ks_unifor
 | `extract_quick.C` | Primary metric extraction from ROOT files |
 | `aggregate_per_run_v2.C` | Weighted per-run aggregation |
 | `add_robust_z.C` | Robust outlier detection (local median + MAD) |
-| `plot_dashboard.C` | Trend plots and summary dashboard |
-| `analyze_consistency_v2.C` | Physics consistency checks |
+| `extract_metrics_v2.C` | Config-driven metric extraction (full method parity with extract_quick) |
+| `plot_dashboard.C` | Config-driven trend plots and auto-sized summary dashboard |
+| `generate_report_md.C` | Generates `REPORT.md` with per-metric stats and health overview |
+| `analyze_consistency_v2.C` | Physics consistency checks with threshold & marker support |
 | `merge_per_run.C` | Wide-format CSV merging |
 | `pca_multimetric.C` | PCA across metrics |
 | `intt_ladder_health.C` | INTT detector health diagnostics |
@@ -113,15 +119,25 @@ After a full pipeline run, `20250928/out/` contains:
 - **`metrics_*_perrun.csv`** -- per-run aggregates with robust z-score columns
 - **`metrics_perrun_wide.csv`** -- all metrics joined into one row per run
 - **`metric_*_perrun.{png,pdf}`** -- per-metric trend plots with outlier annotations
-- **`dashboard_intt_2x2.{png,pdf}`** -- summary dashboard
+- **`dashboard_NxM.{png,pdf}`** -- auto-sized summary dashboard (grid scales with metric count)
+- **`REPORT.md`** -- per-metric statistics table and health overview
 - **`consistency_summary.csv`** -- physics consistency flags
 - **`_stamp.txt`** -- session metadata (date, run range, config)
 
+## Validation
+
+Run the smoke test to verify pipeline outputs without Python dependencies:
+
+```bash
+make smoke-test
+```
+
+This checks that all expected CSVs, columns, and stamp files exist, and reports NaN rates per metric.
+
 ## Known issues
 
-- `intt_hits_asym` can produce zero data range for some runs, causing ROOT axis warnings (plots still generate correctly).
-- `extract_metrics_v2.C` (config-driven extractor) does not yet have full feature parity with `extract_quick.C`.
-- One metric (`intt_hits_asym`) had NaN entries across all 13 runs in the last session.
+- `intt_hits_asym` produces all-NaN values across the current 13 runs (sensor occupancy histograms are empty in this data). This is a data limitation, not a code bug.
+- `derived` and `control` targets reference physqa metrics (e.g. Landau MPV, TPC uniformity) that are not in `metrics.conf`. These targets fail gracefully via Make's `-` prefix and will activate when multi-subsystem data is available.
 
 ## Current data
 

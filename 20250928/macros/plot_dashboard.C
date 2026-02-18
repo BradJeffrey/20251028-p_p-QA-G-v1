@@ -13,6 +13,7 @@
 #include <vector>
 #include <cmath>
 #include <tuple>
+#include <algorithm>
 
 struct Row {
     int run;
@@ -21,6 +22,28 @@ struct Row {
     int weak;
     int strong;
 };
+
+static std::string trim_ws(std::string s) {
+    auto f=[](unsigned char c){return !std::isspace(c);};
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), f));
+    s.erase(std::find_if(s.rbegin(), s.rend(), f).base(), s.end());
+    return s;
+}
+
+static std::vector<std::string> metrics_from_conf(const char* conf) {
+    std::vector<std::string> m;
+    std::ifstream in(conf); std::string line;
+    while (std::getline(in, line)) {
+        line = trim_ws(line);
+        if (line.empty() || line[0] == '#') continue;
+        auto p = line.find(',');
+        if (p == std::string::npos) continue;
+        std::string name = trim_ws(line.substr(0, p));
+        if (std::find(m.begin(), m.end(), name) == m.end())
+            m.push_back(name);
+    }
+    return m;
+}
 
 // Helper to find per-run CSV for a metric; tries both metrics_ and metric_ prefixes
 static std::string find_perrun_csv(const std::string& metric) {
@@ -149,29 +172,40 @@ static void pad_axis(TGraphErrors* gr) {
     }
 }
 
-void plot_dashboard() {
-    std::vector<std::string> metrics = {
-        "cluster_size_intt_mean",
-        "cluster_phi_intt_rms",
-        "intt_adc_peak",
-        "intt_hits_asym"
-    };
+// Config-driven dashboard: reads all metrics from metrics.conf,
+// auto-sizes the grid, and produces a single PDF/PNG.
+void plot_dashboard(const char* conf = "metrics.conf") {
+    auto metrics = metrics_from_conf(conf);
+    if (metrics.empty()) {
+        std::cerr << "[WARN] no metrics found in " << conf << "\n";
+        return;
+    }
+
+    int N = (int)metrics.size();
+    // compute grid: ncols x nrows
+    int ncols = (int)std::ceil(std::sqrt((double)N));
+    int nrows = (int)std::ceil((double)N / ncols);
+
     std::vector<std::tuple<std::unique_ptr<TGraphErrors>, std::unique_ptr<TGraphErrors>, std::unique_ptr<TGraphErrors>>> all;
-    all.reserve(metrics.size());
-    for (auto &m : metrics) {
+    all.reserve(N);
+    for (auto& m : metrics) {
         auto tup = make_graphs(m);
         if (std::get<0>(tup)) {
             pad_axis(std::get<0>(tup).get());
         }
         all.push_back(std::move(tup));
     }
-    TCanvas c("c_dash", "INTT dashboard (2x2)", 1200, 900);
-    c.Divide(2,2);
-    for (int i = 0; i < 4; ++i) {
-        c.cd(i+1);
-        auto &tup = all[i];
-        TGraphErrors* base = std::get<0>(tup).get();
-        TGraphErrors* weak = std::get<1>(tup).get();
+
+    int width  = 600 * ncols;
+    int height = 450 * nrows;
+    TCanvas c("c_dash", "QA Dashboard", width, height);
+    c.Divide(ncols, nrows);
+
+    for (int i = 0; i < N; ++i) {
+        c.cd(i + 1);
+        auto& tup = all[i];
+        TGraphErrors* base   = std::get<0>(tup).get();
+        TGraphErrors* wk     = std::get<1>(tup).get();
         TGraphErrors* strong = std::get<2>(tup).get();
         TLegend leg(0.13, 0.77, 0.5, 0.92);
         leg.SetTextSize(0.035);
@@ -182,10 +216,10 @@ void plot_dashboard() {
             leg.AddEntry(base, "normal", "p");
             hasData = true;
         }
-        if (weak && weak->GetN() > 0) {
-            weak->SetMarkerColor(kOrange+7);
-            weak->Draw(hasData ? "P SAME" : "AP");
-            leg.AddEntry(weak, "weak", "p");
+        if (wk && wk->GetN() > 0) {
+            wk->SetMarkerColor(kOrange + 7);
+            wk->Draw(hasData ? "P SAME" : "AP");
+            leg.AddEntry(wk, "weak", "p");
             hasData = true;
         }
         if (strong && strong->GetN() > 0) {
@@ -202,8 +236,12 @@ void plot_dashboard() {
             lat.DrawLatexNDC(0.15, 0.5, Form("No data for %s", metrics[i].c_str()));
         }
     }
+
     gSystem->mkdir("out", true);
-    c.SaveAs("out/dashboard_intt_2x2.pdf");
-    c.SaveAs("out/dashboard_intt_2x2.png");
-    std::cout << "[DONE] wrote out/dashboard_intt_2x2.{png,pdf}\n";
+
+    // generate filenames based on grid size
+    std::string base_name = "out/dashboard_" + std::to_string(ncols) + "x" + std::to_string(nrows);
+    c.SaveAs((base_name + ".pdf").c_str());
+    c.SaveAs((base_name + ".png").c_str());
+    std::cout << "[DONE] wrote " << base_name << ".{png,pdf} (" << N << " metrics, " << ncols << "x" << nrows << " grid)\n";
 }

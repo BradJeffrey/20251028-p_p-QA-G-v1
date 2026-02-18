@@ -1,4 +1,67 @@
+## Severity thresholds for outlier classification.
+## "mild", "moderate", "severe" are z-score levels.
+## Global defaults apply unless overridden per metric.
+
 global:
   mild: 1.0
   moderate: 2.0
   severe: 3.0
+
+## Per-metric overrides.
+## Metrics with naturally higher variance get wider thresholds;
+## metrics where even small shifts matter get tighter thresholds.
+
+per_metric:
+  # ADC peak is very stable run-to-run; small shifts are significant
+  intt_adc_peak:
+    mild: 1.0
+    moderate: 2.0
+    severe: 3.0
+
+  # ADC median tracks peak but is noisier
+  intt_adc_median_p50:
+    mild: 1.5
+    moderate: 2.5
+    severe: 4.0
+
+  # p90 is inherently noisier (upper tail)
+  intt_adc_p90:
+    mild: 2.0
+    moderate: 3.0
+    severe: 5.0
+
+  # KS p-value is volatile; only extreme values matter
+  intt_phi_uniform_r1:
+    mild: 2.0
+    moderate: 3.0
+    severe: 5.0
+
+  # Chi2/NDF: values near 1 are normal, >5 is concerning
+  intt_phi_chi2_reduced:
+    mild: 1.5
+    moderate: 2.5
+    severe: 4.0
+
+  # BCO peak: discrete steps are normal (phase toggling); only drifts matter
+  intt_bco_peak:
+    mild: 2.0
+    moderate: 3.0
+    severe: 5.0
+
+  # Cluster size: very stable, shifts indicate real problems
+  cluster_size_intt_mean:
+    mild: 1.0
+    moderate: 2.0
+    severe: 3.0
+
+  # Cluster phi RMS: moderate natural variation
+  cluster_phi_intt_rms:
+    mild: 1.5
+    moderate: 2.5
+    severe: 4.0
+
+  # Hit asymmetry: often NaN with current data; wide thresholds
+  intt_hits_asym:
+    mild: 2.0
+    moderate: 3.0
+    severe: 5.0
